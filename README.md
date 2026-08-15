@@ -6,7 +6,7 @@
 
 ## 一、简单介绍
 
-**KPOP DAILY · for you** 是一个可复用的脚本集合（同时也封装成 WorkBuddy skill），用来生成一份**个性化 KPOP 每日晨报**：
+**KPOP DAILY · for you** 是一个可复用的脚本集合，用来生成一份**个性化 KPOP 每日晨报**：
 
 - 自动抓取当天 KPOP 新闻（回归、舞台、热点、官宣）和韩国最大音源榜 **Melon** 的实时排名；
 - 把新闻标题 / 摘要翻译成中文（人名用「中文（English）」格式，团名 / 歌名保持原文）；
@@ -72,11 +72,11 @@
 
 ## 五、其他人如何使用
 
-### 方式 A：作为 WorkBuddy skill 使用
+### 方式 A：作为 skill 使用
 1. 把 `kpop-daily-skill/` 整个目录复制到：
-   - 用户级：`~/.workbuddy/skills/kpop-daily/`
-   - 或项目级：`<你的项目>/.workbuddy/skills/kpop-daily/`
-2. 在 WorkBuddy 对话中说"帮我生成今天的 KPOP 日报"，skill 会自动加载并按流程执行。
+   - 用户级
+   - 或项目级
+2. 在agent对话中说"帮我生成今天的 KPOP 日报"，skill 会自动加载并按流程执行。
 
 ### 方式 B：直接用脚本（任意 Python 环境）
 无需 WorkBuddy，只要有 Python 3.9+：
