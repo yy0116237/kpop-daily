@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPOP DAILY · for you · 工作台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">K</span>
+    <div class="brand-txt">
+      <h1>KPOP DAILY <em>· for you</em></h1>
+      <p>日报 × 日程 × 收藏 × 记忆</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-view="daily">日报</button>
+    <button class="tab" data-view="items">收藏</button>
+    <button class="tab" data-view="cons">Con 记忆</button>
+    <button class="tab" data-view="ledger">账本</button>
+  </nav>
+  <div class="status" id="status"><span class="dot"></span>本地数据</div>
+</header>
+
+<main>
+  <!-- ============ 首页：日报 + 右上日程 ============ -->
+  <section id="view-daily" class="view active">
+    <div class="hero">
+      <div class="hero-txt">
+        <p class="hero-kicker" id="hero-date">加载中…</p>
+        <h2 id="hero-lead">正在拉取今日日报…</h2>
+        <div class="flash-row" id="flashes"></div>
+      </div>
+    </div>
+
+    <div class="home-grid">
+      <div class="news-col">
+        <div id="news-sections"></div>
+      </div>
+      <aside class="side-col">
+        <div class="card sched-card">
+          <div class="card-head">
+            <h3>日程区</h3>
+            <button class="btn small" id="btn-add-event">＋ 新增</button>
+          </div>
+          <div id="event-list" class="event-list"></div>
+          <p class="hint" id="event-hint">还没有日程，点「＋ 新增」或从日报一键加入。</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="chart-bar card">
+      <div class="card-head">
+        <h3 id="chart-title">数据 · 榜单</h3>
+      </div>
+      <p class="muted meta-line" id="chart-meta"></p>
+      <div id="chart-list" class="chart-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ 收藏（M3） ============ -->
+  <section id="view-items" class="view">
+    <div class="toolbar">
+      <div class="filters" id="item-status-filters">
+        <button class="chip active" data-status="all">全部</button>
+        <button class="chip" data-status="wishlist">种草</button>
+        <button class="chip" data-status="ordered">在途</button>
+        <button class="chip" data-status="owned">已到手</button>
+        <button class="chip" data-status="sold">已出物</button>
+      </div>
+      <div class="filters" id="item-kind-filters">
+        <button class="chip active" data-kind="all">全部</button>
+        <button class="chip" data-kind="album">专辑</button>
+        <button class="chip" data-kind="photocard">小卡</button>
+        <button class="chip" data-kind="merch">周边</button>
+        <button class="chip" data-kind="other">其他</button>
+      </div>
+      <button class="btn primary small" id="btn-add-item">＋ 新增</button>
+    </div>
+    <div id="item-list" class="item-grid"></div>
+    <p class="hint" id="item-hint" style="display:none">还没有收藏记录，点「＋ 新增收藏」开始记录。</p>
+  </section>
+
+  <!-- ============ Con 记忆（M4） ============ -->
+  <section id="view-cons" class="view">
+    <div class="toolbar">
+      <div class="filters" id="con-group-filters">
+        <button class="chip active" data-group="all">全部</button>
+      </div>
+      <button class="btn primary small" id="btn-add-con">＋ 新增</button>
+    </div>
+    <div id="con-list" class="con-grid"></div>
+    <p class="hint" id="con-hint" style="display:none">还没有 Con 记录，点「＋ 新增」记录你的第一场演出。</p>
+  </section>
+
+  <!-- ============ 账本（M5 里程碑） ============ -->
+  <section id="view-ledger" class="view">
+    <div id="ledger-root" class="ledger"></div>
+  </section>
+</main>
+
+<!-- ============ 日程编辑弹窗 ============ -->
+<div class="modal-mask" id="modal-mask" hidden>
+  <div class="modal card">
+    <div class="card-head">
+      <h3 id="modal-title">新增日程</h3>
+      <button class="btn ghost" id="modal-close">✕</button>
+    </div>
+    <form id="event-form">
+      <input type="hidden" id="f-id">
+      <div class="form-row two">
+        <label>团体名<em>必填</em>
+          <input type="text" id="f-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required>
+          <datalist id="group-list"></datalist>
+        </label>
+        <label>类型
+          <select id="f-type">
+            <option value="comeback">回归期</option>
+            <option value="pre-release">先行曲</option>
+            <option value="album">专辑发行</option>
+            <option value="showcase">Showcase</option>
+            <option value="tour">巡演</option>
+            <option value="birthday">生日</option>
+            <option value="anniversary">周年</option>
+            <option value="ticketing">抢票日</option>
+            <option value="other">其他</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>事件名<em>必填</em>
+          <input type="text" id="f-title" placeholder="如 TWICE 回归期" required>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>开始日期<em>必填</em><input type="date" id="f-start" required></label>
+        <label>结束日期<input type="date" id="f-end"></label>
+      </div>
+      <div class="form-row two">
+        <label>地点 / 场馆<input type="text" id="f-location" placeholder="城市 / 场馆（巡演单场）"></label>
+        <label>抢票状态
+          <select id="f-ticket">
+            <option value="">—</option>
+            <option value="not_open">未开票</option>
+            <option value="upcoming">待抢</option>
+            <option value="won">已抢到</option>
+            <option value="lost">未抢到</option>
+            <option value="attended">已入场</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>每年重复
+          <select id="f-repeat">
+            <option value="none">否</option>
+            <option value="yearly">是（生日 / 周年）</option>
+          </select>
+        </label>
+        <label>备注<input type="text" id="f-note" placeholder="可选"></label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn ghost" id="btn-cancel">取消</button>
+        <button type="submit" class="btn primary">保存日程</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ 收藏编辑弹窗 ============ -->
+<div class="modal-mask" id="item-mask" hidden>
+  <div class="modal card">
+    <div class="card-head">
+      <h3 id="item-modal-title">新增收藏</h3>
+      <button class="btn ghost" id="item-close">✕</button>
+    </div>
+    <form id="item-form">
+      <input type="hidden" id="i-id">
+      <div class="form-row two">
+        <label>类别<em>必填</em>
+          <select id="i-kind">
+            <option value="album">专辑</option>
+            <option value="photocard">小卡</option>
+            <option value="merch">周边</option>
+            <option value="other">其他</option>
+          </select>
+        </label>
+        <label>状态<em>必填</em>
+          <select id="i-status">
+            <option value="wishlist">种草（想买）</option>
+            <option value="ordered">在途（已下单）</option>
+            <option value="owned">已到手</option>
+            <option value="sold">已出物</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>团体名<em>必填</em>
+          <input type="text" id="i-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required>
+        </label>
+        <label>物品名<em>必填</em>
+          <input type="text" id="i-name" placeholder="如 MINI 12集 ver.A" required>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>版本 / 类型<input type="text" id="i-version" placeholder="ver.A / 成员名"></label>
+        <label>购入平台
+          <select id="i-platform">
+            <option value="">—</option>
+            <option value="k4">k4</option>
+            <option value="amazon_jp">日亚</option>
+            <option value="xianyu">闲鱼</option>
+            <option value="offline">线下</option>
+            <option value="other">其他</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>购入日期<input type="date" id="i-date"></label>
+        <label>金额（CNY，可空）<input type="number" id="i-amount" min="0" step="0.01" placeholder="如 199"></label>
+      </div>
+      <div class="form-row two">
+        <label>原币种金额（海淘，可空）<input type="text" id="i-orig" placeholder="如 3980"></label>
+        <label>原币种（可空）<input type="text" id="i-origc" placeholder="如 JPY / KRW"></label>
+      </div>
+      <div class="form-row">
+        <label>物品照片（本地路径，可空）<input type="text" id="i-image" placeholder="assets/album1.jpg"></label>
+      </div>
+      <div class="form-row">
+        <label>备注<input type="text" id="i-note" placeholder="可选"></label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn ghost" id="i-cancel">取消</button>
+        <button type="submit" class="btn primary">保存收藏</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ Con 记忆编辑弹窗 ============ -->
+<div class="modal-mask" id="con-mask" hidden>
+  <div class="modal card">
+    <div class="card-head">
+      <h3 id="con-modal-title">新增 Con 记忆</h3>
+      <button class="btn ghost" id="con-close">✕</button>
+    </div>
+    <form id="con-form">
+      <input type="hidden" id="c-id">
+      <div class="form-row two">
+        <label>团体 / 艺人<em>必填</em>
+          <input type="text" id="c-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required>
+        </label>
+        <label>演出名<em>必填</em>
+          <input type="text" id="c-title" placeholder="如 TWICE WORLD TOUR 首尔场" required>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>演出日期<em>必填</em><input type="date" id="c-date" required></label>
+        <label>城市<input type="text" id="c-city" placeholder="首尔 / 上海…"></label>
+      </div>
+      <div class="form-row two">
+        <label>场馆<input type="text" id="c-venue" placeholder="KSPO DOME"></label>
+        <label>座位 / 排号<input type="text" id="c-seat" placeholder="内场 A 区 3 排 12 号"></label>
+      </div>
+      <div class="form-row two">
+        <label>票价（CNY，可空）<input type="number" id="c-price" min="0" step="0.01" placeholder="如 1280"></label>
+        <label>心情评分
+          <select id="c-mood">
+            <option value="">—</option>
+            <option value="5">★★★★★ 满分</option>
+            <option value="4">★★★★ 很好</option>
+            <option value="3">★★★ 不错</option>
+            <option value="2">★★ 一般</option>
+            <option value="1">★ 失望</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>原币种票价（海淘，可空）<input type="text" id="c-orig" placeholder="如 143000"></label>
+        <label>原币种（可空）<input type="text" id="c-origc" placeholder="如 KRW"></label>
+      </div>
+      <div class="form-row exp-row-block">
+        <label>花销明细（机酒是大头，建议分项记；可空、可增删）
+          <div id="c-exp-wrap" class="exp-wrap"></div>
+          <button type="button" class="btn small" id="c-add-exp">＋ 加一项花销</button>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>歌单（每行一首，可空）<textarea id="c-setlist" rows="3" placeholder="SIGNAL&#10;FANCY&#10;TT"></textarea></label>
+        <label>位置图 / 照片（本地路径，可空）<input type="text" id="c-image" placeholder="assets/con1.jpg"></label>
+      </div>
+      <div class="form-row">
+        <label>观后感 / repo<input type="text" id="c-review" placeholder="可选"></label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn ghost" id="c-cancel">取消</button>
+        <button type="submit" class="btn primary">保存记忆</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

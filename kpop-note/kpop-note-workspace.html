@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPOP NOTE · 日报 × 记录</title>
+<style>
+/* ============ KPOP NOTE · 日报×记录 · 浅色低饱和 ============ */
+:root{
+  --bg:#f6f4f1;--surface:#ffffff;--surface-2:#fbfaf7;
+  --ink:#3b3a40;--muted:#8b8794;--line:#e9e6ee;
+  --acc1:#8d7bb8;--acc1-soft:#f0ecf9;
+  --acc2:#c98ba6;--acc2-soft:#faf0f4;
+  --teal:#6f9e93;--teal-soft:#eaf3f0;
+  --danger:#c0707a;--gold:#d99f3a;
+  --r-lg:18px;--r-md:12px;--r-sm:8px;
+  --shadow-hover:0 14px 30px rgba(93,80,140,.10);
+  --shadow-float:0 20px 44px rgba(93,80,140,.16);
+  --font:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:13px;color:var(--ink)}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:24px;padding:14px 28px;background:rgba(246,244,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;min-width:280px}
+.logo{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--acc1) 0%,var(--acc2) 100%);color:#fff;font-weight:500;font-size:18px}
+.brand h1{font-size:15px;font-weight:500;letter-spacing:.2px}
+.brand h1 em{font-style:normal;color:var(--muted)}
+.brand p{font-size:11px;color:var(--muted)}
+.tabs{display:flex;gap:6px;flex:1}
+.tab{border:none;background:transparent;color:var(--muted);font-size:13px;padding:8px 16px;border-radius:999px;transition:all .25s ease}
+.tab:hover{background:var(--surface);color:var(--ink);transform:translateY(-1px)}
+.tab.active{background:var(--surface);color:var(--acc1);font-weight:500;box-shadow:0 6px 16px rgba(93,80,140,.10)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.db-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--teal);background:var(--teal-soft);border:1px solid var(--line);padding:4px 12px;border-radius:999px;white-space:nowrap}
+.db-badge.local{color:var(--muted);background:var(--surface-2)}
+.db-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.db-badge.local .dot{background:var(--muted)}
+.status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--teal)}
+.status.off .dot{background:var(--danger)}
+main{max-width:1180px;margin:0 auto;padding:22px 28px 60px}
+.view{display:none}
+.view.active{display:block}
+.hero{border-radius:var(--r-lg);padding:26px 30px;margin-bottom:20px;background:linear-gradient(135deg,var(--acc1-soft) 0%,var(--acc2-soft) 55%,#eef5f2 100%);border:1px solid var(--line)}
+.hero-kicker{font-size:12px;color:var(--acc1);font-weight:500;letter-spacing:.5px}
+.hero h2{font-size:17px;font-weight:500;margin:6px 0 12px;color:var(--ink)}
+.flash-row{display:flex;flex-wrap:wrap;gap:8px}
+.flash{font-size:11px;color:var(--muted);background:rgba(255,255,255,.65);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.news-sec{margin-bottom:22px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}
+.sec-head h3{font-size:14px;font-weight:500;color:var(--ink)}
+.sec-head .cnt{font-size:11px;color:var(--muted)}
+.news-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.item-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;transition:transform .25s ease,box-shadow .25s ease;display:flex;flex-direction:column;gap:8px}
+.item-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+.item-top{display:flex;align-items:center;gap:8px}
+.src{font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+.item-title{font-size:13px;font-weight:500;line-height:1.5;color:var(--ink)}
+.item-sum{font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.item-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.groups{display:flex;flex-wrap:wrap;gap:4px}
+.grp{font-size:10px;color:var(--teal);background:var(--teal-soft);padding:2px 8px;border-radius:999px}
+.btn-add-ev{border:none;background:var(--teal-soft);color:var(--teal);font-size:11px;padding:5px 12px;border-radius:999px;transition:all .25s ease}
+.btn-add-ev:hover{background:var(--teal);color:#fff;transform:translateY(-1px);box-shadow:0 6px 14px rgba(111,158,147,.3)}
+.side-col{position:sticky;top:86px}
+.sched-card{padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-head h3{font-size:14px;font-weight:500}
+.event-list{display:flex;flex-direction:column;gap:8px}
+.evt{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:8px 12px;transition:transform .2s ease,box-shadow .2s ease}
+.evt:hover{transform:translateX(2px);box-shadow:var(--shadow-hover)}
+.evt-date{font-size:11px;color:var(--acc1);font-weight:500;min-width:74px}
+.evt-body{flex:1;min-width:0}
+.evt-title{font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evt-sub{font-size:10px;color:var(--muted)}
+.evt.due{border-color:var(--acc2);background:var(--acc2-soft)}
+.evt.due .evt-date{color:var(--acc2)}
+.evt-del{border:none;background:transparent;color:var(--line);font-size:13px;padding:2px 6px;border-radius:6px;opacity:0;transition:all .2s ease}
+.evt:hover .evt-del{opacity:1;color:var(--danger)}
+.evt-del:hover{background:var(--danger);color:#fff}
+.hint{font-size:11px;color:var(--muted);margin-top:8px}
+.chart-bar{margin-top:20px;padding:18px 22px}
+.chart-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.crow{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:7px 12px;font-size:12px;transition:transform .2s ease,box-shadow .2s ease}
+.crow:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.rank{font-size:11px;color:var(--acc1);font-weight:500;min-width:26px}
+.crow .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .a{color:var(--muted);font-size:11px}
+.muted{font-size:11px;color:var(--muted)}
+.meta-line{margin-bottom:10px}
+.placeholder{padding:40px 30px;border:1px dashed var(--line);text-align:center}
+.placeholder h3{font-size:14px;font-weight:500;margin-bottom:8px}
+.placeholder p{font-size:12px;color:var(--muted);max-width:420px;margin:0 auto}
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12px;padding:6px 14px;border-radius:999px;transition:all .22s ease}
+.chip:hover{transform:translateY(-1px);box-shadow:var(--shadow-hover);color:var(--ink)}
+.chip.active{background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;border:none;box-shadow:0 6px 16px rgba(141,123,184,.28)}
+#btn-add-item{margin-left:auto}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.item-card2{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
+.item-card2:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+.ithumb{position:relative;width:100%;height:130px;min-height:130px;max-height:130px;background:linear-gradient(135deg,var(--acc1-soft),var(--acc2-soft));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ithumb .ph{font-size:30px;color:var(--acc1);font-weight:500;opacity:.55}
+.ithumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.icard-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.icard-top{display:flex;align-items:center;gap:6px}
+.badge{font-size:10px;padding:2px 9px;border-radius:999px;font-weight:500}
+.st-wish{background:var(--acc2-soft);color:var(--acc2)}
+.st-order{background:var(--acc1-soft);color:var(--acc1)}
+.st-owned{background:var(--teal-soft);color:var(--teal)}
+.st-sold{background:var(--surface-2);color:var(--muted)}
+.ikind{font-size:10px;color:var(--muted);margin-left:auto}
+.iname{font-size:13px;color:var(--ink);line-height:1.45}
+.iname .sep{color:var(--line)}
+.iname b{font-weight:500}
+.iver{font-size:11px;color:var(--acc1)}
+.imeta{font-size:11px;color:var(--muted)}
+.iprice{display:flex;align-items:baseline;gap:6px;margin-top:2px;flex-wrap:wrap}
+.iamt{font-size:13px;font-weight:550;color:var(--ink)}
+.iorig{font-size:10px;color:var(--muted)}
+.inote{font-size:11px;color:var(--muted);border-top:1px dashed var(--line);padding-top:5px;margin-top:2px}
+.icard-actions{display:flex;gap:6px;padding:0 14px 12px}
+.mini{border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-size:11px;padding:4px 12px;border-radius:999px;transition:all .2s ease}
+.mini:hover{transform:translateY(-1px)}
+.mini.edit:hover{background:var(--acc1-soft);color:var(--acc1);border-color:var(--acc1)}
+.mini.del:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.con-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.con-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
+.con-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+.cthumb{position:relative;width:100%;height:120px;min-height:120px;max-height:120px;background:linear-gradient(135deg,var(--teal-soft),var(--acc1-soft));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cthumb .cph{font-size:30px;color:var(--teal);font-weight:500;opacity:.55}
+.cthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ccard-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.ccard-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.cgroup{font-size:11px;font-weight:500;color:var(--teal);background:var(--teal-soft);padding:2px 9px;border-radius:999px}
+.cmood{font-size:12px;color:var(--gold);letter-spacing:1px;white-space:nowrap}
+.ctitle{font-size:13px;color:var(--ink);font-weight:500;line-height:1.45}
+.cmeta{font-size:11px;color:var(--muted)}
+.cpriceline{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:2px}
+.cprice{font-size:12px;font-weight:550;color:var(--ink)}
+.corig{font-size:10px;color:var(--muted)}
+.cexp{font-size:11px;color:var(--acc1);background:var(--acc1-soft);padding:2px 8px;border-radius:999px}
+.cset{font-size:11px;color:var(--muted)}
+.crev{font-size:11px;color:var(--muted);border-top:1px dashed var(--line);padding-top:5px;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.exp-wrap{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.exp-row{display:grid;grid-template-columns:84px 1fr 1fr 58px 1.2fr 28px;gap:6px;align-items:center}
+.exp-row select,.exp-row input{margin-top:0;padding:7px 8px;font-size:12px}
+.exp-row .exp-del{border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:6px;font-size:12px;height:33px;transition:all .2s ease}
+.exp-row .exp-del:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:12px;padding:7px 14px;border-radius:999px;transition:all .25s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-hover)}
+.btn.primary{background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;border:none;font-weight:500}
+.btn.primary:hover{box-shadow:0 10px 22px rgba(141,123,184,.35)}
+.btn.ghost{background:transparent;border:none;color:var(--muted);font-size:13px}
+.btn.small{padding:4px 12px;font-size:11px;color:var(--acc1);border-color:var(--acc1)}
+.btn.primary.small{color:#fff;border:none}
+.modal-mask{position:fixed;inset:0;background:rgba(59,58,64,.35);backdrop-filter:blur(3px);z-index:50;display:none;align-items:center;justify-content:center}
+.modal-mask:not([hidden]){display:flex}
+.modal{width:520px;max-width:94vw;padding:22px 26px;animation:pop .25s ease}
+@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.form-row{margin-bottom:14px}
+.form-row.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.form-row label em{font-style:normal;color:var(--acc2);font-size:10px;margin-left:4px}
+.form-row input,.form-row select,.form-row textarea{width:100%;margin-top:4px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);outline:none;transition:border .2s ease}
+.form-row textarea{font-family:inherit;font-size:13px;line-height:1.5;resize:vertical}
+.form-row textarea:focus,.form-row input:focus,.form-row select:focus{border-color:var(--acc1)}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:12px;padding:10px 20px;border-radius:999px;box-shadow:var(--shadow-float);z-index:99}
+/* 账本 */
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpi-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.kpi-label{font-size:11px;color:var(--muted)}
+.kpi-val{font-size:22px;font-weight:550;color:var(--ink)}
+.ledger-donut,.ledger-monthly,.ledger-budget,.ledger-year{padding:18px 20px}
+.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.donut{position:relative;width:160px;height:160px;border-radius:50%;flex:0 0 auto}
+.donut-hole{position:absolute;inset:26px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:550;color:var(--ink)}
+.legend{list-style:none;display:flex;flex-direction:column;gap:8px;flex:1;min-width:160px;margin:0}
+.legend li{display:flex;align-items:center;gap:8px;font-size:12px}
+.lg-dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.lg-name{color:var(--ink);flex:1}
+.lg-val{color:var(--ink);font-weight:500}
+.lg-pct{color:var(--muted);min-width:38px;text-align:right}
+.bars{display:flex;align-items:flex-end;gap:10px;min-height:178px;padding-top:8px}
+.bar-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0}
+.bar{width:100%;max-width:42px;background:linear-gradient(180deg,var(--acc1),var(--acc2));border-radius:8px 8px 0 0;min-height:3px;transition:height .4s ease}
+.bar-x{font-size:10px;color:var(--muted)}
+.bar-v{font-size:10px;color:var(--ink)}
+.budget-line{display:flex;justify-content:space-between;font-size:12px;color:var(--ink);margin-bottom:8px}
+.budget-bar{height:12px;background:var(--surface-2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.budget-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--acc1));border-radius:999px;transition:width .4s ease}
+.year-list{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);margin:0}
+.year-list b{color:var(--ink);font-weight:550}
+@media (max-width:900px){
+  .home-grid{grid-template-columns:1fr}
+  .side-col{position:static}
+  .tabs{order:3;width:100%;justify-content:center}
+  .news-grid{grid-template-columns:1fr}
+  .chart-list{grid-template-columns:1fr}
+  .item-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .topbar{flex-wrap:wrap;gap:10px}
+  .ledger{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">N</span>
+    <div class="brand-txt">
+      <h1>KPOP NOTE <em>· 日报 × 记录</em></h1>
+      <p>日程 · 收藏 · Con 记忆 · 追星账本</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-view="daily">日报</button>
+    <button class="tab" data-view="items">收藏</button>
+    <button class="tab" data-view="cons">Con 记忆</button>
+    <button class="tab" data-view="ledger">账本</button>
+  </nav>
+  <div class="topbar-right">
+    <span class="db-badge local" id="db-badge"><span class="dot"></span><span id="db-txt">本地存储</span></span>
+    <div class="status" id="status"><span class="dot"></span>示例日报</div>
+  </div>
+</header>
+
+<main>
+  <section id="view-daily" class="view active">
+    <div class="hero">
+      <div class="hero-txt">
+        <p class="hero-kicker" id="hero-date">加载中…</p>
+        <h2 id="hero-lead">正在载入日报…</h2>
+        <div class="flash-row" id="flashes"></div>
+      </div>
+    </div>
+    <div class="home-grid">
+      <div class="news-col"><div id="news-sections"></div></div>
+      <aside class="side-col">
+        <div class="card sched-card">
+          <div class="card-head"><h3>日程区</h3><button class="btn small" id="btn-add-event">＋ 新增</button></div>
+          <div id="event-list" class="event-list"></div>
+          <p class="hint" id="event-hint">还没有日程，点「＋ 新增」或从日报一键加入。</p>
+        </div>
+      </aside>
+    </div>
+    <div class="chart-bar card">
+      <div class="card-head"><h3 id="chart-title">数据 · 榜单</h3></div>
+      <p class="muted meta-line" id="chart-meta"></p>
+      <div id="chart-list" class="chart-list"></div>
+    </div>
+  </section>
+
+  <section id="view-items" class="view">
+    <div class="toolbar">
+      <div class="filters" id="item-status-filters">
+        <button class="chip active" data-status="all">全部</button>
+        <button class="chip" data-status="wishlist">种草</button>
+        <button class="chip" data-status="ordered">在途</button>
+        <button class="chip" data-status="owned">已到手</button>
+        <button class="chip" data-status="sold">已出物</button>
+      </div>
+      <div class="filters" id="item-kind-filters">
+        <button class="chip active" data-kind="all">全部</button>
+        <button class="chip" data-kind="album">专辑</button>
+        <button class="chip" data-kind="photocard">小卡</button>
+        <button class="chip" data-kind="merch">周边</button>
+        <button class="chip" data-kind="other">其他</button>
+      </div>
+      <button class="btn primary small" id="btn-add-item">＋ 新增</button>
+    </div>
+    <div id="item-list" class="item-grid"></div>
+    <p class="hint" id="item-hint" style="display:none">还没有收藏记录，点「＋ 新增收藏」开始记录。</p>
+  </section>
+
+  <section id="view-cons" class="view">
+    <div class="toolbar">
+      <div class="filters" id="con-group-filters"><button class="chip active" data-group="all">全部</button></div>
+      <button class="btn primary small" id="btn-add-con">＋ 新增</button>
+    </div>
+    <div id="con-list" class="con-grid"></div>
+    <p class="hint" id="con-hint" style="display:none">还没有 Con 记录，点「＋ 新增」记录你的第一场演出。</p>
+  </section>
+
+  <section id="view-ledger" class="view">
+    <div class="toolbar">
+      <div class="btn-row">
+        <button class="btn small" id="btn-export-json">导出 JSON</button>
+        <button class="btn small" id="btn-export-csv">导出 CSV</button>
+        <button class="btn small" id="btn-import-json">导入 JSON</button>
+        <button class="btn small" id="btn-import-csv">导入 CSV</button>
+        <button class="btn small" id="btn-reset-seed">重置示例</button>
+      </div>
+      <p class="muted" style="margin-left:auto">数据源：<span id="db-txt2">本地存储</span> · 页面 ↔ CSV 双向同步</p>
+      <input type="file" id="file-json" accept=".json,application/json" hidden>
+      <input type="file" id="file-csv" accept=".csv,text/csv" hidden>
+    </div>
+    <div id="ledger-root" class="ledger"></div>
+  </section>
+</main>
+
+<!-- 日程弹窗 -->
+<div class="modal-mask" id="modal-mask" hidden>
+  <div class="modal card">
+    <div class="card-head"><h3 id="modal-title">新增日程</h3><button class="btn ghost" id="modal-close">✕</button></div>
+    <form id="event-form">
+      <input type="hidden" id="f-id">
+      <div class="form-row two">
+        <label>团体名<em>必填</em><input type="text" id="f-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required><datalist id="group-list"></datalist></label>
+        <label>类型<select id="f-type">
+          <option value="comeback">回归期</option><option value="pre-release">先行曲</option><option value="album">专辑发行</option>
+          <option value="showcase">Showcase</option><option value="tour">巡演</option><option value="birthday">生日</option>
+          <option value="anniversary">周年</option><option value="ticketing">抢票日</option><option value="other">其他</option>
+        </select></label>
+      </div>
+      <div class="form-row"><label>事件名<em>必填</em><input type="text" id="f-title" placeholder="如 TWICE 回归期" required></label></div>
+      <div class="form-row two">
+        <label>开始日期<em>必填</em><input type="date" id="f-start" required></label>
+        <label>结束日期<input type="date" id="f-end"></label>
+      </div>
+      <div class="form-row two">
+        <label>地点 / 场馆<input type="text" id="f-location" placeholder="城市 / 场馆（巡演单场）"></label>
+        <label>抢票状态<select id="f-ticket">
+          <option value="">—</option><option value="not_open">未开票</option><option value="upcoming">待抢</option>
+          <option value="won">已抢到</option><option value="lost">未抢到</option><option value="attended">已入场</option>
+        </select></label>
+      </div>
+      <div class="form-row two">
+        <label>每年重复<select id="f-repeat"><option value="none">否</option><option value="yearly">是（生日 / 周年）</option></select></label>
+        <label>备注<input type="text" id="f-note" placeholder="可选"></label>
+      </div>
+      <div class="form-actions"><button type="button" class="btn ghost" id="btn-cancel">取消</button><button type="submit" class="btn primary">保存日程</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- 收藏弹窗 -->
+<div class="modal-mask" id="item-mask" hidden>
+  <div class="modal card">
+    <div class="card-head"><h3 id="item-modal-title">新增收藏</h3><button class="btn ghost" id="item-close">✕</button></div>
+    <form id="item-form">
+      <input type="hidden" id="i-id">
+      <div class="form-row two">
+        <label>类别<em>必填</em><select id="i-kind"><option value="album">专辑</option><option value="photocard">小卡</option><option value="merch">周边</option><option value="other">其他</option></select></label>
+        <label>状态<em>必填</em><select id="i-status"><option value="wishlist">种草（想买）</option><option value="ordered">在途（已下单）</option><option value="owned">已到手</option><option value="sold">已出物</option></select></label>
+      </div>
+      <div class="form-row two">
+        <label>团体名<em>必填</em><input type="text" id="i-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required></label>
+        <label>物品名<em>必填</em><input type="text" id="i-name" placeholder="如 MINI 12集 ver.A" required></label>
+      </div>
+      <div class="form-row two">
+        <label>版本 / 类型<input type="text" id="i-version" placeholder="ver.A / 成员名"></label>
+        <label>购入平台<select id="i-platform"><option value="">—</option><option value="k4">k4</option><option value="amazon_jp">日亚</option><option value="xianyu">闲鱼</option><option value="offline">线下</option><option value="other">其他</option></select></label>
+      </div>
+      <div class="form-row two">
+        <label>购入日期<input type="date" id="i-date"></label>
+        <label>金额（CNY，可空）<input type="number" id="i-amount" min="0" step="0.01" placeholder="如 199"></label>
+      </div>
+      <div class="form-row two">
+        <label>原币种金额（海淘，可空）<input type="text" id="i-orig" placeholder="如 3980"></label>
+        <label>原币种（可空）<input type="text" id="i-origc" placeholder="如 JPY / KRW"></label>
+      </div>
+      <div class="form-row"><label>物品照片（本地路径，可空）<input type="text" id="i-image" placeholder="assets/album1.jpg"></label></div>
+      <div class="form-row"><label>备注<input type="text" id="i-note" placeholder="可选"></label></div>
+      <div class="form-actions"><button type="button" class="btn ghost" id="i-cancel">取消</button><button type="submit" class="btn primary">保存收藏</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Con 记忆弹窗 -->
+<div class="modal-mask" id="con-mask" hidden>
+  <div class="modal card">
+    <div class="card-head"><h3 id="con-modal-title">新增 Con 记忆</h3><button class="btn ghost" id="con-close">✕</button></div>
+    <form id="con-form">
+      <input type="hidden" id="c-id">
+      <div class="form-row two">
+        <label>团体 / 艺人<em>必填</em><input type="text" id="c-group" list="group-list" placeholder="TWICE / LE SSERAFIM…" required></label>
+        <label>演出名<em>必填</em><input type="text" id="c-title" placeholder="如 TWICE WORLD TOUR 首尔场" required></label>
+      </div>
+      <div class="form-row two">
+        <label>演出日期<em>必填</em><input type="date" id="c-date" required></label>
+        <label>城市<input type="text" id="c-city" placeholder="首尔 / 上海…"></label>
+      </div>
+      <div class="form-row two">
+        <label>场馆<input type="text" id="c-venue" placeholder="KSPO DOME"></label>
+        <label>座位 / 排号<input type="text" id="c-seat" placeholder="内场 A 区 3 排 12 号"></label>
+      </div>
+      <div class="form-row two">
+        <label>票价（CNY，可空）<input type="number" id="c-price" min="0" step="0.01" placeholder="如 1280"></label>
+        <label>心情评分<select id="c-mood"><option value="">—</option><option value="5">★★★★★ 满分</option><option value="4">★★★★ 很好</option><option value="3">★★★ 不错</option><option value="2">★★ 一般</option><option value="1">★ 失望</option></select></label>
+      </div>
+      <div class="form-row two">
+        <label>原币种票价（海淘，可空）<input type="text" id="c-orig" placeholder="如 143000"></label>
+        <label>原币种（可空）<input type="text" id="c-origc" placeholder="如 KRW"></label>
+      </div>
+      <div class="form-row exp-row-block">
+        <label>花销明细（机酒是大头，建议分项记；可空、可增删）
+          <div id="c-exp-wrap" class="exp-wrap"></div>
+          <button type="button" class="btn small" id="c-add-exp">＋ 加一项花销</button>
+        </label>
+      </div>
+      <div class="form-row two">
+        <label>歌单（每行一首，可空）<textarea id="c-setlist" rows="3" placeholder="SIGNAL&#10;FANCY&#10;TT"></textarea></label>
+        <label>位置图 / 照片（本地路径，可空）<input type="text" id="c-image" placeholder="assets/con1.jpg"></label>
+      </div>
+      <div class="form-row"><label>观后感 / repo<input type="text" id="c-review" placeholder="可选"></label></div>
+      <div class="form-actions"><button type="button" class="btn ghost" id="c-cancel">取消</button><button type="submit" class="btn primary">保存记忆</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+'use strict';
+/* ================================================================
+   KPOP NOTE · 日报 × 记录  ——  资料库双向同步版
+   数据层策略（四级适配）：
+   ① 资料库平台注入 API（window.__WB_DATA__ 等，平台环境自动命中）
+   ② 同源 CSV 数据表（发布后由资料库托管，可通过相对路径读取）
+   ③ localStorage 本地降级（键 wb_kpop_note_v1，任何环境可用）
+   ④ 导出/导入 JSON + CSV 手工兜底（账本页按钮）
+   在资料库打开时，页面与在线表格双向同步；未接入时自动降级本地，
+   功能完整可用。
+================================================================ */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+/* ---------- 数据层 ---------- */
+const DB = (() => {
+  const KEY = 'wb_kpop_note_v1';
+  const g = typeof window !== 'undefined' ? window : globalThis;
+  // 探测资料库注入的同步运行时（多种常见命名，防御式探测）
+  let cloud = null;
+  try {
+    const cand = [g.__WB_DATA__, g.__WB_LIBRARY__, g.__wbSync__, g.WBLibrary, (g.parent && g.parent.__WB_DATA__), (g.parent && g.parent.__WB_LIBRARY__)];
+    for (const c of cand) {
+      if (c && typeof c === 'object' && (typeof c.load === 'function' || typeof c.get === 'function' || typeof c.read === 'function')) { cloud = c; break; }
+    }
+  } catch (e) { cloud = null; }
+  let mode = 'local';
+
+  async function load() {
+    if (cloud) {
+      try {
+        const v = await (cloud.load ? cloud.load(KEY) : cloud.get(KEY));
+        if (v) { mode = 'cloud'; return JSON.parse(v); }
+      } catch (e) {}
+      try {
+        const r = await fetch('./kpop-note-data.csv', { cache: 'no-store' });
+        if (r.ok) {
+          const txt = await r.text();
+          const obj = csvToData(txt);
+          if (obj && (obj.events || obj.items || obj.cons)) { mode = 'cloud'; return obj; }
+        }
+      } catch (e) {}
+    }
+    try {
+      const ls = localStorage.getItem(KEY);
+      if (ls) { mode = 'local'; return JSON.parse(ls); }
+    } catch (e) {}
+    return null;
+  }
+  async function save(data) {
+    const txt = JSON.stringify(data);
+    let saved = 'local';
+    if (cloud) {
+      try { await (cloud.save ? cloud.save(KEY, txt) : cloud.set(KEY, txt)); saved = 'cloud'; } catch (e) {}
+    }
+    try { localStorage.setItem(KEY, txt); } catch (e) {}
+    mode = saved;
+    return saved;
+  }
+  function badge(el, el2) {
+    const on = mode === 'cloud';
+    const b = $('#db-badge'); b.classList.toggle('local', !on);
+    $('#db-txt').textContent = on ? '云端同步' : '本地存储';
+    if (el2) el2.textContent = on ? '云端同步' : '本地存储';
+  }
+  return { load, save, badge, get mode() { return mode; }, get cloud() { return !!cloud; } };
+})();
+
+/* ---------- CSV 工具 ---------- */
+function csvCell(v) {
+  v = String(v == null ? '' : v);
+  return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function toCSV(rows) { // rows: 对象数组，键序取首个对象
+  if (!rows.length) return '';
+  const head = Object.keys(rows[0]);
+  const lines = [head.join(',')];
+  rows.forEach(r => lines.push(head.map(h => csvCell(r[h])).join(',')));
+  return lines.join('\r\n');
+}
+function csvParse(text) {
+  const rows = []; let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQ) {
+      if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
+      else cur += ch;
+    } else if (ch === '"') inQ = true;
+    else if (ch === ',') { row.push(cur); cur = ''; }
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      row.push(cur); cur = ''; rows.push(row); row = [];
+    } else cur += ch;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  if (!rows.length) return [];
+  const head = rows[0].map(h => h.trim());
+  return rows.slice(1).map(r => {
+    const o = {};
+    head.forEach((h, j) => { o[h] = (r[j] == null ? '' : r[j]).trim(); });
+    return o;
+  });
+}
+function download(name, content, type) {
+  const blob = new Blob([content], { type: type || 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 400);
+}
+const CSV_COLS = {
+  events: ['group', 'type', 'title', 'startDate', 'endDate', 'location', 'ticketStatus', 'repeat', 'note'],
+  items: ['kind', 'status', 'group', 'name', 'version', 'platform', 'purchasedDate', 'amount', 'originalAmount', 'originalCurrency', 'image', 'note'],
+  cons: ['group', 'title', 'date', 'city', 'venue', 'seat', 'ticketPrice', 'mood', 'expenses', 'setlist', 'seatImage', 'review']
+};
+function dataToCSV(data) {
+  const ev = (data.events || []).map(r => { const o = {}; CSV_COLS.events.forEach(k => o[k] = r[k]); return o; });
+  const it = (data.items || []).map(r => { const o = {}; CSV_COLS.items.forEach(k => o[k] = r[k]); return o; });
+  const co = (data.cons || []).map(r => {
+    const o = {}; CSV_COLS.cons.forEach(k => o[k] = r[k]);
+    if (r.expenses) o.expenses = JSON.stringify(r.expenses);
+    if (r.setlist) o.setlist = JSON.stringify(r.setlist);
+    return o;
+  });
+  return { events: toCSV(ev), items: toCSV(it), cons: toCSV(co) };
+}
+function csvToData(csvText) {
+  // 期望合并 CSV：首列 table 字段区分三表；或单表导入
+  const rows = csvParse(csvText);
+  if (!rows.length) return null;
+  const out = { events: [], items: [], cons: [] };
+  const num = v => (v === '' || v == null) ? undefined : Number(v);
+  rows.forEach(r => {
+    const table = (r.table || '').trim();
+    if (table === 'events') {
+      out.events.push({
+        group: r.group, type: r.type || 'other', title: r.title, startDate: r.startDate,
+        endDate: r.endDate || undefined, location: r.location || undefined,
+        ticketStatus: r.ticketStatus || undefined, repeat: r.repeat || 'none', note: r.note || undefined,
+        id: r.id || uid(), createdAt: r.createdAt, updatedAt: r.updatedAt
+      });
+    } else if (table === 'items') {
+      out.items.push({
+        kind: r.kind || 'other', status: r.status || 'owned', group: r.group, name: r.name,
+        version: r.version || undefined, platform: r.platform || undefined,
+        purchasedDate: r.purchasedDate || undefined, amount: num(r.amount),
+        originalAmount: r.originalAmount || undefined, originalCurrency: r.originalCurrency || undefined,
+        image: r.image || undefined, note: r.note || undefined, id: r.id || uid()
+      });
+    } else if (table === 'cons') {
+      let expenses, setlist;
+      try { expenses = r.expenses ? JSON.parse(r.expenses) : undefined; } catch (e) { expenses = undefined; }
+      try { setlist = r.setlist ? JSON.parse(r.setlist) : undefined; } catch (e) { setlist = undefined; }
+      out.cons.push({
+        group: r.group, title: r.title, date: r.date,
+        city: r.city || undefined, venue: r.venue || undefined, seat: r.seat || undefined,
+        ticketPrice: num(r.ticketPrice), mood: num(r.mood),
+        expenses, setlist, seatImage: r.seatImage || undefined, review: r.review || undefined,
+        id: r.id || uid()
+      });
+    }
+  });
+  if (!out.events.length && !out.items.length && !out.cons.length) return null;
+  return out;
+}
+
+/* ---------- 状态与常量 ---------- */
+const state = { data: null, daily: null, prefill: null, itemFilter: { status: 'all', kind: 'all' }, conFilter: { group: 'all' } };
+const TYPE_LABEL = { comeback: '回归期', 'pre-release': '先行曲', album: '专辑', showcase: 'Showcase', tour: '巡演', birthday: '生日', anniversary: '周年', ticketing: '抢票日', other: '日程' };
+const TICKET_LABEL = { not_open: '未开票', upcoming: '待抢', won: '已抢到', lost: '未抢到', attended: '已入场' };
+const KIND_LABEL = { album: '专辑', photocard: '小卡', merch: '周边', other: '其他' };
+const KIND_ICON = { album: '辑', photocard: '卡', merch: '物', other: '★' };
+const STATUS_LABEL = { wishlist: '种草', ordered: '在途', owned: '已到手', sold: '已出物' };
+const STATUS_CLASS = { wishlist: 'st-wish', ordered: 'st-order', owned: 'st-owned', sold: 'st-sold' };
+const PLATFORM_LABEL = { k4: 'k4', amazon_jp: '日亚', xianyu: '闲鱼', offline: '线下', other: '其他' };
+const EXP_LABEL = { ticket: '票', transport: '交通', hotel: '住宿', food: '餐饮', merch: '周边', other: '其他' };
+const MOOD_STAR = { 5: '★★★★★', 4: '★★★★', 3: '★★★', 2: '★★', 1: '★' };
+const CAT_COLOR = { '演出票': '#8d7bb8', '交通': '#c98ba6', '住宿': '#6f9e93', '餐饮': '#e0b27a', '周边': '#9aa7d6', '专辑周边': '#c9a3c9', '其他': '#b0a89c' };
+const CAT_ORDER = ['演出票', '交通', '住宿', '餐饮', '周边', '专辑周边', '其他'];
+
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(t._tm); t._tm = setTimeout(() => (t.hidden = true), 2400); }
+function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function inferType(cat, title) {
+  if (cat === 'comeback') return 'comeback';
+  const t = title || '';
+  if (/tour|巡演|콘서트/i.test(t)) return 'tour';
+  if (/pre-?release|先行|선공개/i.test(t)) return 'pre-release';
+  if (/album|专辑|미니/i.test(t)) return 'album';
+  if (/showcase/i.test(t)) return 'showcase';
+  return 'other';
+}
+async function saveAll(msg) {
+  const how = await DB.save(state.data);
+  DB.badge();
+  $('#db-txt2').textContent = how === 'cloud' ? '云端同步' : '本地存储';
+  toast(msg + (how === 'cloud' ? ' · 已同步云端' : ' · 已存本地'));
+}
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+/* ---------- 内嵌示例数据（由构建脚本注入） ---------- */
+const EMBED_DAILY = {"date": "2026-08-15", "lead": "Stray Kids’ \"THIS & THAT\" 预计首次亮相便以 362,000 辆位居第一", "flashes": [{"text": "Stray Kids首周销量328万份", "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBRRGNCWmhsQThwb0lTd1JZdDBJS29zX21ORG5qUVJXTzcwcEVYajR1MnNDbnh2SWhFZFFsaElIOEtLeHNtaDBpV3Y5OXJNNnRm?oc=5"}, {"text": "Stray Kids’ \"THIS & THAT\" 预计首次亮相便以 362,000 辆位居第一", "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQZTVUQTlwWmk3RnZMekJtYW16alZuVW9kVWpTb2ctS1BlQWJJWjBKcWFfRk5saWNFdngyVjRXdFE2dkhSR19XVmRrQlg4V0htRURjcUtRTGlCVkhMRG1tblVMUDhZcW5NV0xpUU5PU1FESUJ3VHJlMmpiSDRFR3Z3bzVfSHNUdHNHRlpHWHhB?oc=5"}, {"text": "'After breakup rumors with chaebol, dating rumors'丽莎，因十周年争议而心烦意乱：\"I'我太伤心了”[明星问题]", "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1PQ24waG14SzVrQzZMdHNtZndWc2tZX2ZxSFE4RVUydnpCdlNhbmQ3Nlc1azZqOGh5WFRfT2k2Z25ueWhlNF9HMllBVHVLLVNrSEFucm9ha0ZQNmp0MGczUnh4MDdfMU1FU3dFVnN5U1BfZDBHWEZV?oc=5"}, {"text": "BTS成员郑号锡（j-hope）和金南俊（RM）在多伦多参加Chris Brown演出并与歌手合影后引起强烈抗议", "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE94MHJNVzNUckdRaW9FWFlrN3JvWVBXanNhcDVhcVdTU3VKNVc1ZVJsUlJsMTJGanQ4RDBmMEM0WkdXazRZY2VhWUEyNWtaRWR0UzQyUklLcDN1S1BoU3FKQnVNMTdIVk5JTHF2WF8zWQ?oc=5"}, {"text": "报告：Stray Kids’“This & That”首次亮相，在美国占据主导地位#1，销量 35.1 万，销量 36.2 万……", "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOR1FXNmJfZE5ETmF2dHlZRFp3WUpRZGpTVjRHbWZkbENiZmFKMGdIYmVONkFGTnZVSHFJNmRCSW5NZWhaYUdwSmo3UTdJWlpaR0ZZeHlNcERJWklfWU1jREdVcUdMY2p5UTRQd0NEei1vRXZ2aFdEcHN4TTNmOWVqblFnYzJTTFJ3NzRxeHdrTGg4b1lQNlBFRjVWSHQxYUZhblN6ZTdjRExfcVNoODNSclp3QjFyZm9MUk9XMXU1LXB2ZnBXVnhIejlSQdIB0AFBVV95cUxNRW5vMHlDcGNBR2s0bHp6WE5jb0h1UE56bzg4NlRxMG9lRmJ5eWF6THVGaTRyamRwUVZpTHdWQm5Bb3Q4Z0Ytd0k3MkFrTGU3RGN6SWF0Z0dyUWp1TEVuaGlRb2hBc0hBVzE3TFV4WXhBNmpWMWU0M2J4NnRmS3VlUXlXaGptd1ZEZWFQZGJxYjhqU3diT3U1Znl2a1JSd05xckhNLU5vbm11X0VtbEQ2a0xhZ3diaVFzM250b2RoRkxXcV9NZWJWUUlMSXo2enY3?oc=5"}], "sections": [{"label": "回归·新曲发行", "items": [{"id": "sha1:3a8720b51ffc5667", "title": "Stray Kids’ \"THIS & THAT\" 预计首次亮相便以 362,000 辆位居第一", "summary": "Stray Kids’ \"THIS & THAT\" 预计首次亮相，收视率将达到 36.2 万份游戏音乐", "category": "comeback", "groups": ["Stray Kids"], "publishedAt": "2026-08-15T09:34:44+09:00", "discoveredAt": "2026-08-15T10:50:12.899773+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQZTVUQTlwWmk3RnZMekJtYW16alZuVW9kVWpTb2ctS1BlQWJJWjBKcWFfRk5saWNFdngyVjRXdFE2dkhSR19XVmRrQlg4V0htRURjcUtRTGlCVkhMRG1tblVMUDhZcW5NV0xpUU5PU1FESUJ3VHJlMmpiSDRFR3Z3bzVfSHNUdHNHRlpHWHhB?oc=5"}}, {"id": "sha1:1864b4388e8a4742", "title": "报告：Stray Kids’“This & That”首次亮相，在美国占据主导地位#1，销量 35.1 万，销量 36.2 万……", "summary": "报告：Stray Kids’“This & That”在美国首次亮相，销量达 35.1 万，销量达 36.2 万…… h", "category": "comeback", "groups": ["Stray Kids"], "publishedAt": "2026-08-15T07:10:27+09:00", "discoveredAt": "2026-08-15T10:50:12.899752+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOR1FXNmJfZE5ETmF2dHlZRFp3WUpRZGpTVjRHbWZkbENiZmFKMGdIYmVONkFGTnZVSHFJNmRCSW5NZWhaYUdwSmo3UTdJWlpaR0ZZeHlNcERJWklfWU1jREdVcUdMY2p5UTRQd0NEei1vRXZ2aFdEcHN4TTNmOWVqblFnYzJTTFJ3NzRxeHdrTGg4b1lQNlBFRjVWSHQxYUZhblN6ZTdjRExfcVNoODNSclp3QjFyZm9MUk9XMXU1LXB2ZnBXVnhIejlSQdIB0AFBVV95cUxNRW5vMHlDcGNBR2s0bHp6WE5jb0h1UE56bzg4NlRxMG9lRmJ5eWF6THVGaTRyamRwUVZpTHdWQm5Bb3Q4Z0Ytd0k3MkFrTGU3RGN6SWF0Z0dyUWp1TEVuaGlRb2hBc0hBVzE3TFV4WXhBNmpWMWU0M2J4NnRmS3VlUXlXaGptd1ZEZWFQZGJxYjhqU3diT3U1Znl2a1JSd05xckhNLU5vbm11X0VtbEQ2a0xhZ3diaVFzM250b2RoRkxXcV9NZWJWUUlMSXo2enY3?oc=5"}}, {"id": "sha1:36fb2781177ddfcf", "title": "aespa 的 柳智敏（Karina） 首次亮相 Converse，演绎两种截然不同的鞋履风格：点此购买", "summary": "aespa 的 柳智敏（Karina） 首次亮相 Converse，展示了两种截然不同的鞋履风格：在此购买 Yahoo", "category": "comeback", "groups": ["aespa"], "publishedAt": "2026-08-11T10:50:00+09:00", "discoveredAt": "2026-08-15T10:50:14.087657+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOdDRVdnEzV2JFUkNCQUwtejM1QUVkVmltNS1zdW5oLS1qVmtGQ01ld2Rsa0Q2aEdXOE10SVA4YWpJS2FKN3NFUWliLXBFQWdGb0ZuU0owZEc3d2h1N3Q4cXpzWnBMSTk4OXRCNFB5SnEtbHRzcDB6a1RqVVFLU3ZUaUxLb0M2VEhOblotYWU2ZzBFX1Z0T3FwWnREdWg?oc=5"}}, {"id": "sha1:285a195f8d0572fe", "title": "从出道到科切拉音乐节：回顾 BLACKPINK 破纪录的职业生涯", "summary": "从首次亮相到科切拉音乐节：回顾 BLACKPINK 破纪录的职业生涯 Vermilion County First", "category": "comeback", "groups": ["BLACKPINK"], "publishedAt": "2026-08-10T15:17:27+09:00", "discoveredAt": "2026-08-15T10:50:11.453274+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOU1gyNUV3VXJSRG9oZnQ5NkdyM09NNlk1X2pwazFheVRpckNxZTRSZDk1M29CLXpSNE05aVZ3ZnJ2bUUtREhza0VGTEFNSzB3ZXNNUDhMaUxzX1ZDVnJZdndzV3JJMDJEUzk3cGNQRzIzaTBISmVoUHR4Qk1WTzFKdVJuTERkVlY4MnFzZXhHVWFmSHhJeWwyWjd3TGV5MktyTmZvb2dIZm52V2x0akJUQzlXckhleWdT?oc=5"}}, {"id": "sha1:d180cf311094acf4", "title": "金智妮（Jennie）、朴彩英（Rosé）、Lisa 和 金智秀（Jisoo） 如何纪念 BLACKPINK 出道 10 周年", "summary": "金智妮（Jennie）、朴彩英（Rosé）、Lisa 和 金智秀（Jisoo） 如何纪念 BLACKPINK 出道 10", "category": "comeback", "groups": ["BLACKPINK"], "publishedAt": "2026-08-09T03:40:00+09:00", "discoveredAt": "2026-08-15T10:50:11.453004+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNdTE0MXN5enoyekdLUXg1dzh2RlJtOUY1X05iczNKMzhjNzlIU011OGxOS2p5MnVmbVRHbm1RTnlySV9QS2hmVk53eVU4cmFkcHM2SFotZGxkT3ZrMEd3RUZPbzVkU2tMSmNWTVFqMkxyZkEwX3BLRDVrSVpCbWNmdi1CZ2VCbmhVeWJSQm5MNjR4cnh0SEY3dHVWQVdzVHNaa1h6bXY5VXQ5UFRCU3lr?oc=5"}}, {"id": "sha1:739a8d6720c20b9e", "title": "Stray Kids 首尔 Run It 世界巡回演唱会现场首演", "summary": "Stray Kids 在首尔开启 Run It 世界巡演现场首演 Jambase.com", "category": "comeback", "groups": ["Stray Kids"], "publishedAt": "2026-07-27T16:00:00+09:00", "discoveredAt": "2026-08-15T10:50:12.899827+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQcVBDSnR0c3ZTaTJIdWlUbUt6UU9hMXFXQkFxZUpDanpYUy1Lbk9tbVRzdTlqbHczRjRPYmRrcXFoRVBuT3VsUVJJVVJDQ25ZRlRMNWZ0UUR2RG1qNHNHUFJwZ1E5QndzMW9FVUxsVjJ1MndYeHJYZnNwSmhBdzNHWEFDV2d5cnpaVUk2eUpn?oc=5"}}, {"id": "sha1:76b332fe153eb814", "title": "NewJeans 以包括 金玟池（Minji） 在内的视觉效果以四重奏形式回归", "summary": "NewJeans 以四重奏形式复出，视觉效果包括 金玟池（Minji） 雅虎", "category": "comeback", "groups": ["NewJeans"], "publishedAt": "2026-07-26T16:00:00+09:00", "discoveredAt": "2026-08-15T10:50:08.605260+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNeDlfandWaXFqMXdKS2ZRREkyWUctOEw5Y1dmOTcxdmNsUlNCWmh2M0dMckIwWVJkeVQ4dlVNM01MMDdNZUE0bjBXREYtdFpzUFNKaGVldWlyWENzdkwzU3hVWDJZenh2WXJpRTluNS1QcWlXajlhdnN2TFAzWGtwOHMxcDdDZTRHa0tKby1pTS1TWDFDa3hFdkFtVUd1WW1TZmYtZGEzVFRVUQ?oc=5"}}, {"id": "sha1:dd9f225c388e2942", "title": "K-Pop 的 NewJeans 暗示在与其唱片公司长达数月的争执后将卷土重来", "summary": "K-Pop 的 NewJeans 暗示在与其唱片公司长达数月的争执后将卷土重来 - 纽约时报中文网", "category": "comeback", "groups": ["NewJeans"], "publishedAt": "2026-07-22T16:00:00+09:00", "discoveredAt": "2026-08-15T10:50:08.605063+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNRmp1SFNaNWtjYUplb3FYZFM5RmstZHBfOW51UUxoOWhZcWFkVVUxUHpDWVNiazdvNDVFRDlIRG1rZU5MVlFQeUlick5velFKRzN1YXAya0NOcEdoWEwwYmswQmJGWk91RG1hWFZZNFkwNlI0TW45ZjlBWURNdllKMQ?oc=5"}}, {"id": "sha1:8401b713f2dae7a4", "title": "NewJeans 发布神秘预告片暗示音乐回归", "summary": "NewJeans 发布神秘预告片暗示音乐回归 thefader.com", "category": "comeback", "groups": ["NewJeans"], "publishedAt": "2026-07-21T16:00:00+09:00", "discoveredAt": "2026-08-15T10:50:08.605144+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5nNktQaWpGSmpDTjUydzMxT1doWFh5aFMyRGtfZmV1Y1RxcWxSV0JvcTVRS0Fjc0xzbE5BRndMZk5lNDJFUzNJWGFMaGlUcUI5M3R3dE1wY0VXejN4c29JZHBLdE5aOHhQYnJjTDZIWDVSaXRxV0FXRmZ4WQ?oc=5"}}]}, {"label": "舞台·打歌", "items": [{"id": "sha1:26bb827006f3c0cb", "title": "观看：Stray Kids 在“音乐银行”上凭借“This & That”获得第二名； KiiiKiii、WayV 等人的表演", "summary": "Stray Kids 凭借“This & That”赢得了他们的第二个音乐节目奖杯！在 8 月 14 日播出的“Musi", "category": "stage", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T20:45:18+09:00", "discoveredAt": "2026-08-15T10:50:06.102495+09:00", "source": {"name": "Soompi"}, "links": {"original": "https://www.soompi.com/article/1863004wpp/watch-stray-kids-takes-2nd-win-for-this-that-on-music-bank-performances-by-kiiikiii-wayv-and-more"}}, {"id": "sha1:0ceb62ece1bf23aa", "title": "观看 LE SSERAFIM 的 PURE FLOWERS LIVE 表演视频和粉丝问答，仅限 Spotify", "summary": "观看 LE SSERAFIM 的 PURE FLOWERS LIVE 现场表演视频和粉丝问答，仅限 Spotify Sp", "category": "stage", "groups": ["LE SSERAFIM"], "publishedAt": "2026-06-08T16:00:00+09:00", "discoveredAt": "2026-08-15T10:50:09.892134+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPM0c0QVlVYlpCbzl6VGlzWnMwVVJxXzM2MVFjWkNSSlBaMzRFWXo3UmZHRlNrQ1A4LTRwdHJnV2RaQ3dCT3pSQUxneG1SaWFGZjdHaEZaZ2k1SWVIVHg3S2c5bHhuUm9ENS0tU0hBVTZfLUtWYmQtUERmbU9PT21tWU8wa1ppWmVIdHhoeTgtZWlCV2l5TF93N0Fnb2ZnSlFwSVJobA?oc=5"}}]}, {"label": "热点·话题", "items": [{"id": "sha1:1d0df4ef6dc766ff", "title": "Stray Kids首周销量328万份", "summary": "Stray Kids《每日经济新闻》首周销量328万份", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-15T10:36:21+09:00", "discoveredAt": "2026-08-15T10:50:12.899964+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBRRGNCWmhsQThwb0lTd1JZdDBJS29zX21ORG5qUVJXTzcwcEVYajR1MnNDbnh2SWhFZFFsaElIOEtLeHNtaDBpV3Y5OXJNNnRm?oc=5"}}, {"id": "sha1:ea127a35dd31af14", "title": "'After breakup rumors with chaebol, dating rumors'丽莎，因十周年争议而心烦意乱：\"I'我太伤心了”[明星问题]", "summary": "'After breakup rumors with chaebol, dating rumors' Lisa，因十周年", "category": "trend", "groups": ["BLACKPINK"], "publishedAt": "2026-08-15T09:25:02+09:00", "discoveredAt": "2026-08-15T10:50:11.453153+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1PQ24waG14SzVrQzZMdHNtZndWc2tZX2ZxSFE4RVUydnpCdlNhbmQ3Nlc1azZqOGh5WFRfT2k2Z25ueWhlNF9HMllBVHVLLVNrSEFucm9ha0ZQNmp0MGczUnh4MDdfMU1FU3dFVnN5U1BfZDBHWEZV?oc=5"}}, {"id": "sha1:e06a4cbe497155b0", "title": "BTS成员郑号锡（j-hope）和金南俊（RM）在多伦多参加Chris Brown演出并与歌手合影后引起强烈抗议", "summary": "BTS 成员 郑号锡（j-hope） 和 金南俊（RM） 参加多伦多克里斯·布朗 (Chris Brown) 演出并与歌", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-15T08:56:51+09:00", "discoveredAt": "2026-08-15T10:50:07.346446+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMib0FVX3lxTE94MHJNVzNUckdRaW9FWFlrN3JvWVBXanNhcDVhcVdTU3VKNVc1ZVJsUlJsMTJGanQ4RDBmMEM0WkdXazRZY2VhWUEyNWtaRWR0UzQyUklLcDN1S1BoU3FKQnVNMTdIVk5JTHF2WF8zWQ?oc=5"}}, {"id": "sha1:4febc468c4525c00", "title": "BTS 退出格莱美投票后，唱片学院考虑修改新的亚洲流行音乐类别", "summary": "BTS 退出格莱美投票后，唱片学院考虑修改新的亚洲流行音乐类别 - 好莱坞报道", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-15T07:07:57+09:00", "discoveredAt": "2026-08-15T10:50:07.346380+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMitAFBVV95cUxORmxsTjdsV1VZOXZGWXBrcU5rTWE3WHI1RThHUnUwYzRBSlhkU2p4MmJHNE9TUk96ZDNEd0k4VXhYZjc4RExBbDh0aXBPNDZ1QTZSUzZtOTRxR3ZjdTczZkYwWXRwMFlRcWhzSmU3VFN5VkJQb05ibDJOVXBJTS01STRHR19Jai1lOXg2M21kQ0ZCOWhhcGpNNXFtcVFybHJDSkZuWmlqem54dXMzZGUtN1dEZms?oc=5"}}, {"id": "sha1:e6658a7895cbc73b", "title": "最终榜单：Stray Kids Find a Home at #1（和共和国规则）", "summary": "排行榜决赛：Stray Kids Find a Home at #1（和共和国规则）每日点击量双倍", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-15T06:09:23+09:00", "discoveredAt": "2026-08-15T10:50:12.899729+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1EZzVKZmpjVEVhWmNKc2hTLThfSjlWa2F5S05kS2R5RXVUQmVSeXVtRVVTNmZfVHJoeG42aWFicjlBWVJoSkRtS01yXzlyRzJILS1UNzJYY3I3UWxuQUN2RVFwLTdxNE05MFBOTk1wUXRlUENN?oc=5"}}, {"id": "sha1:f9cc39ecd75ed49e", "title": "BLACKPINK 十年定义职业生涯中最具标志性的时刻", "summary": "BLACKPINK 十年定义职业生涯中最具标志性的时刻 Grazia Singapore", "category": "trend", "groups": ["BLACKPINK"], "publishedAt": "2026-08-15T04:49:31+09:00", "discoveredAt": "2026-08-15T10:50:11.452945+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNTnFua1UzTVNMSFhsczZtMHV3c0tlTHczaXZya2RaV182Vll2Nk8zSFFwNFVPUWRNVkpoZHVWNGd4cURVaDJ4X09VSzZqTFZfRTF6cVlWa0lQZDM5UjNvSV9tOHZXZGR1QV9WcUNFeF85dkhpSWRKUDVSMUpnbkRTblhGSUxtYXJvTGY4R2pXdklRdHRnZEpDXzFB?oc=5"}}, {"id": "sha1:7c3fa518c6b4e1b5", "title": "巴尔的摩餐厅真好，BTS在那里吃了TWICE - WBAL-TV", "summary": "巴尔的摩餐厅真好，BTS 在那里吃饭TWICE  WBAL-TV", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-15T03:06:00+09:00", "discoveredAt": "2026-08-15T10:50:07.346562+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQVzF6TVR1Um5kNVVFM2JTYWVlRWZGUGtqSHBiYkVZaXUyV3QxbGNBLW9hNVo1QUxhRVFlQi1ueE5HbnhWelhUaG9EUS1XT2t5d0Z1ajBaWU1mTlZzNjBtcWxCUHNxVmJBdm8xMkNKWS05bW5DSGlSQ0xDQWd6bDRZdm1LNHY1d1VkRXJUSXIwbU5qQmh4RVQ3OFhtTTZTckZ1Q1c1a0E0V0tPR2t2?oc=5"}}, {"id": "sha1:bfd3d05ba27b0157", "title": "Stray Kids' 黄铉辰（Hyunjin） 损失8000万韩元赞助耳环，成员救援", "summary": "Stray Kids' 黄铉辰（Hyunjin） 失去8000万韩元赞助耳环，成员救援 |朝鲜日报", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-15T01:28:43+09:00", "discoveredAt": "2026-08-15T10:50:12.899863+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNSFZ3YlFZM2V4cU1hUEdLSlNIUEl4bU1jT3F5aHpaY1l6YWhYNks3dndkZ09ndHhBQVpJdlpkT2lTU19ra2pYVGs0YkZMZG5xcWZUVVdtY0t5c3VKbVpNZUJZWVpFN1ZnNFc4WnJCN0tZdWxxaFY4OFN6LXlBMEk1eEVBSVhYY21sRzFLMFVR?oc=5"}}, {"id": "sha1:e09dcf1463d27553", "title": "传奇蒂基塔卡 #aespa #æspa #aespa #aesParty #aespaT", "summary": "레전드 티키타카 #aespa #æspa #aespa #aesParty #aespa", "category": "trend", "groups": ["aespa"], "publishedAt": "2026-08-14T21:00:21+09:00", "discoveredAt": "2026-08-15T10:50:26.588615+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/shorts/s-DcE-Fc2yw"}}, {"id": "sha1:78d0bf48109a7ef1", "title": "#黄铉辰（Hyunjin） 和 #杨敬元（I.N） 的 #THIS_AND_THAT 挑战与 #Kani！💃 #StrayKids #StrayKids #黄铉辰（Hyunjin） #I_N", "summary": "#현진 & #아이엔 의 #THIS_AND_THAT Challenge w/ #카니 님 !💃 #StrayKids", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T20:59:43+09:00", "discoveredAt": "2026-08-15T10:50:24.405517+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/shorts/kEcUq-hTtro"}}, {"id": "sha1:b7995f27da2b36f5", "title": "aespa 在日本迷你专辑中传递夏日欢呼声", "summary": "aespa 在日本迷你专辑中传达夏日欢呼声《日本时报》", "category": "trend", "groups": ["aespa"], "publishedAt": "2026-08-14T20:54:27+09:00", "discoveredAt": "2026-08-15T10:50:14.087332+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1tLXA4SEw0MHZqLXNvSjRndnZGOUc5bGF1M0Y0aEpQNTFhYTdtWTQ5MGI4Nl9yNzVuMjdKNm9kVERGNm1iYmxfclEzWWZiazJpeFlwbjJFVW1WTHk5SWZwZjNtSC03QnQxTEFPbTZER0pzZ2Mta2ozNThmZ3M?oc=5"}}, {"id": "sha1:e951daf471a6107f", "title": "aespa 是一家人 | ❮aesParty❯ EP.16", "summary": "aespa는 가족이 맞다 | ❮aesParty❯ EP.16", "category": "trend", "groups": ["aespa"], "publishedAt": "2026-08-14T20:00:36+09:00", "discoveredAt": "2026-08-15T10:50:26.588633+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/watch?v=4JvDoXtBbLk"}}, {"id": "sha1:72963fc144796db9", "title": "Stray Kids' 黄铉辰（Hyunjin）透露，在他丢失了价值8000万韩元的赞助耳环后，成员们赶去营救：\"李龙馥（Felix） picked it up and saved the day\"", "summary": "Stray Kids' 黄铉辰（Hyunjin） 透露，他丢失了价值 8000 万韩元的赞助耳环后，成员们赶去营救：\"李", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T19:31:24+09:00", "discoveredAt": "2026-08-15T10:50:12.900051+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPNjNiMTQ5Y1dPMWM0ZzA3NTcxTVdUbE9wV1g4cG1xY2gtaE12WERuLVZYU2owMzhVdVZvZGZjNGl4MEg1NXNWbEgyVVJoYjVMcTUyUVNtWTdoNndZRVpQOXBwTjJjWndXZHFmMWNjOF9wQ1hkcXFsdUlmcmFyZURrMF9IQQ?oc=5"}}, {"id": "sha1:59075d6fb64ec918", "title": "Stray Kids \"This & That\" M/V 制作电影", "summary": "Stray Kids \"This & That\" M/V MAKING FILM", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T18:59:56+09:00", "discoveredAt": "2026-08-15T10:50:24.405538+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/watch?v=7Gnzk7JJU6w"}}, {"id": "sha1:06454c609069b8db", "title": "BTS巨星金南俊（RM）初涉艺术策展人", "summary": "金南俊（RM），BTS 的超级巨星，初涉艺术策展人纽约时报", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-14T18:00:42+09:00", "discoveredAt": "2026-08-15T10:50:07.346275+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMieEFVX3lxTE5PV19xRTV5cjU4djRVUmxMSDNnY2ZnOGFCTGw5cllJWUZ0S09FbFRuanlCY1c5RFhZWjZ5bzJiQ3pHUHRjaTdUQ05kZnF2NmlQZHBWenRPMURFYnR1UVdVeEtUZE02Tk51WG9acllGLV9Rei1pSmZNag?oc=5"}}, {"id": "sha1:5ede6eea53493ab2", "title": "Stray Kids最新EP首周销量突破328万张", "summary": "Stray Kids’最新EP首周销量达328万张 韩国先驱报", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T15:24:50+09:00", "discoveredAt": "2026-08-15T10:50:12.899809+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFB5Nnh2MzE1SnJra19qS000YkRMVzByQ1BIcXMtLXY1Wjl0Ny10SlFKTkN4aXZLMzBNNzJ5T0piQnRoLUxYVGlTRHk3WE1zSWhyclFfc0tkNA?oc=5"}}, {"id": "sha1:e8b9a6531926631d", "title": "#金昇玟（Seungmin） 与 #DAY6 #DAY6 #Wonpil #WONPIL 前辈的 #THIS_AND_THAT 挑战！🍀 #StrayKids #金昇玟（Seungmin）@DAY6Official", "summary": "#승민 의 #THIS_AND_THAT Challenge w/ #DAY6 #데이식스 #원필 #WONPIL 선배", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T15:00:06+09:00", "discoveredAt": "2026-08-15T10:50:24.405559+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/shorts/EN2HXMvDH_Y"}}, {"id": "sha1:a87ec0916c0a4f60", "title": "[通知] aespa ❮aesParty❯ 官方商品", "summary": "[通知] aespa ❮aesParty❯ 官方商品 Weverse", "category": "trend", "groups": ["aespa"], "publishedAt": "2026-08-14T14:56:55+09:00", "discoveredAt": "2026-08-15T10:50:14.087368+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE9VMUxUOUs4TVNTc1V5QXU3U2VPZWZxaGpPZkRULWdWWnhVVDVXUS02Z0sxbTFaVU9kaTlkNlZlaTNYUzVkQ0Y5N3JPOW5LQQ?oc=5"}}, {"id": "sha1:0de1a51f5e49a276", "title": "NewJeans' 姜谐潾（Haerin）、Missing Fang 等出现在杂志封面上...返回 ADOR 后的首次个人活动", "summary": "NewJeans' 姜谐潾（Haerin）、Missing Fang 等出现在杂志封面上...返回 ADOR Sport", "category": "trend", "groups": ["NewJeans"], "publishedAt": "2026-08-14T10:40:51+09:00", "discoveredAt": "2026-08-15T10:50:08.605306+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPeGlmclB0c0RFZ1dYaWFJOTM0Nk1hWXFld0dYek5ZTzdjSDl0WXNSZXM2UVd0Ujc0UTdqWW5pVkV1MHJzQ0YwWWdxbVl0N2xUNmstR3MxdkdNa3BfZjVYQ2VOOERDY2l5MmVSaDAxd2t5NEFHTFh0dUtxdWZmUFNQMHlMdw?oc=5"}}, {"id": "sha1:ed4e795910e25141", "title": "像炸药一样点燃它：阿灵顿欢迎韩国流行音乐偶像 BTS 和粉丝", "summary": "像炸药一样点燃它：阿灵顿欢迎韩国流行音乐偶像 BTS 和粉丝 阿灵顿市 (.gov)", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-14T08:29:43+09:00", "discoveredAt": "2026-08-15T10:50:07.346596+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOb1ZqaW1fYTBZQW5zRm1ORWtYbXh6cnZPbFlCbnNWejQ1N3A3ME1hSThZUGwwQVBDcFlQX213d2lnc0xEeDB1YTNsWGhjZzhlOHItYXJFdFBHMjUwWkFLbEdrdHBpWmgwSXRTYXNFbUV5bkZJblpjc2kxeDJsX1o5c1ZjRVBGRUgtYmdvZXV5Vmh3SWFBdVRPbFhQUUUzWHdfTkUzQWgybWpRU1VnLUxXQUtzYVp1NkVQSUMyNENLbXM?oc=5"}}, {"id": "sha1:c9728b9dd0de550c", "title": "BLACKPINK 的 Lisa 将成为第一位在拉斯维加斯驻场的 K-Pop 艺术家", "summary": "BLACKPINK 的 Lisa 将成为第一位在拉斯维加斯驻场的 K-Pop 艺术家 TicketNews", "category": "trend", "groups": ["BLACKPINK"], "publishedAt": "2026-08-14T07:43:35+09:00", "discoveredAt": "2026-08-15T10:50:11.453080+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNXlCeThYdndSVDM0M214VEhTWmxmeExMc0lWeVVHVC12a1VsOVRNQ1dfS3ZBd0ZEVGdLSzBNdS1OQ1hhaEF5N0lTZzJxVEhkM1liN3VvakVmVGJsSEpxMHpldVVtNXNpc3pSaXRrV2haVWxDNDVFRWR4Z2ZLTUtYOTJGeE1vZmMwOVNJelpRM3p0ekIzNXRzbDhfS01zdVBVRXJTVWY4cXU?oc=5"}}, {"id": "sha1:70d1ea633c1e8a87", "title": "BLACKPINK 成员 Lisa 登上《Vogue》韩国版 2026 年 9 月号", "summary": "BLACKPINK 成员 Lisa 登上《Vogue》韩国版 2026 年 9 月号封面 designscene.net", "category": "trend", "groups": ["BLACKPINK"], "publishedAt": "2026-08-14T04:39:43+09:00", "discoveredAt": "2026-08-15T10:50:11.452902+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5iS050elBhcVBmc2FMMFlaclZaWGE3RjgzY1BkUTY2cjg1Q1UwamJZdkdwUEt5UWtMQ3lfaGc5S1NSWTJHeVk5bm5nN3FkLV8xRmxuRVRFUmRVQXZ2NkptNzJKN0hKMU1NdTNTZzJwcy1xUHpuUXc?oc=5"}}, {"id": "sha1:a5ebeff90d6a2c0f", "title": "他们通常如何滚动👜👐 #StrayKids #StrayKids #黄铉辰（Hyunjin） #杨敬元（I.N） #THIS_AND_THAT #YouMakeStrayKidsStay", "summary": "How they usually roll👜👐 #StrayKids #스트레이키즈 #현진 #아이엔 #THIS_AN", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-13T21:00:22+09:00", "discoveredAt": "2026-08-15T10:50:24.405578+09:00", "source": {"name": "YouTube"}, "links": {"original": "https://www.youtube.com/shorts/Y9LUADuGb60"}}, {"id": "sha1:53120feb494dcf5d", "title": "LE SSERAFIM's Global Run Continues... From Japan's Summer Sonic 到美国 iHeartRadio 和 BlizzCon，他们正在接管", "summary": "LE SSERAFIM's Global Run Continues... From Japan's Summer So", "category": "trend", "groups": ["LE SSERAFIM"], "publishedAt": "2026-08-13T11:00:03+09:00", "discoveredAt": "2026-08-15T10:50:09.892077+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiVkFVX3lxTFBnd0E2UG9VZUJFYWF4TWtDNFdCY0dyM1dpaUx2WjQzMWxhc05CSXNVWEh1OTloeDdkWHF5bWFDZUpZOEZRXzZtMDI2c2RtTzd0R0lvQWVB?oc=5"}}, {"id": "sha1:e4d9c30b0c1d13d6", "title": "LE SSERAFIM 美国、日本音乐节阵容名列前茅", "summary": "LE SSERAFIM 名列美国、日本音乐节阵容 |朝鲜日报", "category": "trend", "groups": ["LE SSERAFIM"], "publishedAt": "2026-08-13T10:11:47+09:00", "discoveredAt": "2026-08-15T10:50:09.891929+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOMFhpYTVOUWVoM2JtTkVZQnNpaTJpbVlzVFlGeHNPQzM1d2piejMybC1xSjB4eUwzdF9hRmpfZzd3RDNTc1g1b2UxcXM2X0JxSjhFeTN6Y3JydEJmUkpCZ29CUC1qZGdtaVJNcmt2MlpNaVRLaWtXZTFhaUhZZjZBanBMcFhJVTMtS0dIamVB?oc=5"}}, {"id": "sha1:fbfa0ea48763f5af", "title": "BTS 去了巴尔的摩的哪些餐厅和景点？", "summary": "BTS 去了巴尔的摩的哪些餐厅和景点？  巴尔的摩旗帜", "category": "trend", "groups": ["BTS"], "publishedAt": "2026-08-13T05:02:00+09:00", "discoveredAt": "2026-08-15T10:50:07.346655+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPZnhVOG5TNXJoVlh2dks1QU40UU1IdHlwT2NaTlNxUE5LSExZd3ljTzBPVF9HXzZrRlZ1a25mZW1ERlZsSjJYcm1veE9jUG1tUGVtQ2F3d2VpV0hrRnVvTFBOZmtqbHdrX1RUUkJBSlJiN1FieUNuSFMwbnFERk9IVDc5NWl0T19NVzBVUDRIMDdmQQ?oc=5"}}, {"id": "sha1:17014fbadb7627e7", "title": "一本 Stray Kids 儿童读物刚刚在网上发布，封面让我们着迷 - 在这里购买", "summary": "一本 Stray Kids 儿童读物刚刚在网上发布，封面让我们着迷 - 在这里购买  billboard.com", "category": "trend", "groups": ["Stray Kids"], "publishedAt": "2026-08-13T01:27:13+09:00", "discoveredAt": "2026-08-15T10:50:12.899663+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiygFBVV95cUxORFh4RW43X3lCZ3NUcFB0Q0cyQmRnUmhORDl6a0tnN1FSQTR3WjJGNGZTOFFMSW5oT1ctek1hX25UbEtEMURMekNFUjkwaE4zMThCYWV6azd4dHhHVkhvZDl4a1FEcE9qNUVhZ1MwRDZZTmNySEpVbEw3ZEt2Y2JyZkV5aEtsMkpJNTZIdERrTFVUUVdEbUptLUtNTGxoODN2OUxySU5BX3d4Y080SU1pbTBfLXh5ZG9DMXVMVmtIeWVJOVd6bjB3bGRB?oc=5"}}, {"id": "sha1:36ce59b8ea5908eb", "title": "aespa's 宁艺卓（Ningning） Recalls Confronting a Tall Stranger Blocking Her View at Charli xcx's Lolla 套装", "summary": "aespa's 宁艺卓（Ningning） Recalls Confronting a Tall Stranger Bl", "category": "trend", "groups": ["aespa"], "publishedAt": "2026-08-12T13:15:11+09:00", "discoveredAt": "2026-08-15T10:50:14.087540+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNcjhOZjFfVmFPajBVOEFrQS1zVGF1ZzROaGl2R3ZlN19NbnFHSlM5RUNIcmRKWmxHblQ3MldvTG1kRndybFlWcG9RNWlUSUpkUEFHbFIwLUdSbG5oUTBtZ2hvSjlYMHZkd1Y5TUgtNXJablg3X19aWi1XSVBodzhTSjZDaTFfNjg3Y0F1Qm1VTlYxRWM?oc=5"}}, {"id": "sha1:532b83ac7ada4173", "title": "漂亮的金智妮（Jennie） 😍 BLACKPINK 的金智妮（Jennie） 分享了一系列特写照片，展示了她为杂志拍摄的惊艳造型。 （📸：珍妮/Instagram）", "summary": "漂亮的金智妮（Jennie） 😍 BLACKPINK 的金智妮（Jennie） 分享了一系列特写照片，展示了她为杂志拍摄", "category": "trend", "groups": ["BLACKPINK"], "publishedAt": "2026-08-11T19:21:13+09:00", "discoveredAt": "2026-08-15T10:50:11.453212+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQNVN2bmlwSWZNalY5aE5ONGltb25ZTkx2bnQzWkNOeFduZkJSQmZGQW02TVdqQW9vWTBfcDBTcmNYWC1nMFU0aXgtNDFzcG5scjZVTnJVcE42SzJmbWtKU2xBZ1V0U2NSa1hfRk9LRnY3NVhZb0oyWHNYN0gzSHl1OWZDaTRIRTI3bkZETVRSdTd2VDNlSUZIaURxNTJscFBmZnVIQXJHRThabW9vMk0xRTlsTURuNVcxOWs1cmxQSHl0QkRmbmkta2txVEd6V3ljSjk1SkQ3cw?oc=5"}}, {"id": "sha1:16afc66cb1958ada", "title": "2026 年 8 月商店更新", "summary": "2026 年 8 月商店更新  PUBG：绝地求生", "category": "trend", "groups": ["NewJeans"], "publishedAt": "2026-08-11T16:45:01+09:00", "discoveredAt": "2026-08-15T10:50:08.605206+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5ScWliaEpfWDAzdXZDcFVPZmtrTnl1Vi0zMEtJQmNpN1A3aklSNkRTWHd5M0JRaEl6aVAwZWpfV1ZzNmx1?oc=5"}}]}, {"label": "官宣·事件", "items": [{"id": "sha1:51dca201fd898c08", "title": "BTS 撤回后，格莱美可能会重新考虑新亚洲流行奖", "summary": "继 BTS 退出综艺奖之后，格莱美可能会重新考虑新亚洲流行奖", "category": "event", "groups": ["BTS"], "publishedAt": "2026-08-15T05:31:00+09:00", "discoveredAt": "2026-08-15T10:50:07.346338+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOU2RjU2d0WkVtVVh4M2ZMY3F6Y0xSSllTZjJxX01OU3ZaMGdoZlhvLVMwd3U5UXBPMTctU2pHdUJoV2hralNjU2sxZnRKMXoxSzU2TUQ5ZlFXTmxnR2JSVGhjSUdXT3lJYnQxX3RXUnlZTnY1UmlIbXhKU1BlRE9IUEx6clRIeUlwUmtxMWIxQXpzMGVwYlFEcTBka0QzOGlBeV9RYw?oc=5"}}, {"id": "sha1:9f2566b58ac99547", "title": "BTS 粉丝在韩国流行乐队阿灵顿周末巡演前排队购买商品 - NBC 5 达拉斯-沃斯堡", "summary": "BTS 粉丝在韩国流行乐队阿灵顿周末巡演前排队购买商品 NBC 5 达拉斯-沃斯堡", "category": "event", "groups": ["BTS"], "publishedAt": "2026-08-15T02:21:23+09:00", "discoveredAt": "2026-08-15T10:50:07.346481+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNWlRiaUwyYzMzTFRjaF9SUW40c2JxQW54TjdmRkxBU1BsRFNvMHR1SXhOSUR5ZHdja01YcUdLYTk5R2xwMjhYb3l0YXVLd0QwUXBmd1lZaVUxWjlqaTFrYTZ1dmVJR21CUTBkUi0wb0hkd2VLaFh6a1p1T2RkT25oM1l4ZGZNMzcxVWZQYkwwTmZ1NkZVWHlGR0xGdnY1OUcwVF83TGNTVlVWQlRwR2N2RDk4dE1SWjlFZDFvMlgzSGQ3YlNidzJvSjZjNmZWMGFsd05Z0gHbAUFVX3lxTE5RVjN5WFl6YUNQeFJ1NHJYTjI0MnpxUWEza1FVNzZRaXZGRk91VHhRSjZZbUxJSTVNaTV0bjJLbG9qRkhBS3c1RXJMcVh4RTdzajBsSDVtN3dRWG1oUUNLXzJSMXlJc3hwZEdnNlI2M0gzSDFJbU4ySndsRTNzVjE2TGh5Sk9DZndRZWdnWFdQQ2tldUJVZmlYM3N1N1BSTER1clB5cVc0S01IWWhqcW5DWGsySlJsYjFnV0oxNFdqUkg1d3d3WGZmZll3QUdCM3MzOGhNdGlhUmlObw?oc=5"}}, {"id": "sha1:3f96cab37caa6331", "title": "Weverse BTS 媒体 - BTS WORLD TOUR ‘ARIR", "summary": "Weverse BTS 媒体 - BTS 世界巡回演唱会 ‘ARIR  Weverse", "category": "event", "groups": ["BTS"], "publishedAt": "2026-08-14T20:01:32+09:00", "discoveredAt": "2026-08-15T10:50:07.346625+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFA1aHhrelJuVU90bk9oWHRCbjZiMHMwUTQtSjBYS3l3Z2g4ZTlPaFFyMFdQRDRYbTRTM1UtRjFjY0x4emVIdkhySldqQlZXN2JTZ2c?oc=5"}}, {"id": "sha1:c10ef77ccd2f3cc8", "title": "2026 SPOTV K-Pop Awards 公布颁奖阵容", "summary": "2026 年 SPOTV K-Pop Awards (SKA) 公布了众星云集的主持人阵容！ 8月14日，组委会宣布，今", "category": "event", "groups": [], "publishedAt": "2026-08-14T16:23:51+09:00", "discoveredAt": "2026-08-15T10:50:06.102768+09:00", "source": {"name": "Soompi"}, "links": {"original": "https://www.soompi.com/article/1862984wpp/2026-spotv-k-pop-awards-announces-presenter-lineup"}}, {"id": "sha1:f02b5a8209ef0e10", "title": "张成奎、Billlie 的 Tsuki 和 AND2BLE 的 韩知城（Han） Yujin 宣布担任 2026 年 SPOTV K-Pop Awards 的主持人", "summary": "张圣圭、Billlie 的 Tsuki 和 AND2BLE 的韩宇珍将主持 2026 年 SPOTV K-Pop Awa", "category": "event", "groups": [], "publishedAt": "2026-08-14T15:56:32+09:00", "discoveredAt": "2026-08-15T10:50:06.102852+09:00", "source": {"name": "Soompi"}, "links": {"original": "https://www.soompi.com/article/1862980wpp/jang-sung-kyu-billlies-tsuki-and-and2bles-han-yujin-announced-as-mcs-of-2026-spotv-k-pop-awards"}}, {"id": "sha1:316e78bb0a7a0559", "title": "BTS 在巴尔的摩旅游停留期间在受欢迎的 Fells Point 餐厅用餐 TWICE", "summary": "BTS 在巴尔的摩旅游站期间在受欢迎的 Fells Point 餐厅用餐 TWICE CBS 新闻", "category": "event", "groups": ["BTS"], "publishedAt": "2026-08-14T10:08:00+09:00", "discoveredAt": "2026-08-15T10:50:07.346686+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOUGVVbmtoMExLNGM5U3VEakFFM3lkNTI4RVJ2YlQwQkFJZGtRbHFfU0NhTDFCdWZIODBBUDU4cGhSdFYtVjRCRW56RWhQdWtxRnhnMkpzNDBaU1JCbGROSS1jaUxFcjZNaGxWMmR0Z3NLUzBMS1h1aHNTVlQ1ZTFWWE1oXzNtd25hOHJDYlk1TlpFeVhWS3FDUk1DdWFZdTByVjdXakEyZE9sU0hNcGpz?oc=5"}}, {"id": "sha1:1f8a1c9710d458bd", "title": "近 30 名 K-Pop 粉丝起诉 Live Nation，指控其在 Stray Kids 音乐会上的高温疏忽", "summary": "近 30 名 K-Pop 粉丝起诉 Live Nation，指控其在Stray Kids 音乐会上的高温疏忽", "category": "event", "groups": ["Stray Kids"], "publishedAt": "2026-08-14T07:40:56+09:00", "discoveredAt": "2026-08-15T10:50:12.899897+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOcDI2ejJVenBQenk5ZXdXNmpIdDd2VWdSMkFzSUJIMDYzekUxMTAwTDJHbmR3bXItYkxEZVRNbHQxME9oWWw4ekJjUjloN3pQZkZqU3BnQl9HdlVrSjF1N01zTVNjUUpkaG5PWW1jNllNMXM2MnJtM3JGYnJzSXdmUXB4LU9HcHAyWXdQSkZIYlNxOTh3TFVTOE14bw?oc=5"}}, {"id": "sha1:cd6d3bc1fa6030f6", "title": "Converse 签约 aespa 的 柳智敏（Karina） 担任品牌大使", "summary": "Converse 签约 aespa 的 柳智敏（Karina） 担任品牌大使 clashmusic.com", "category": "event", "groups": ["aespa"], "publishedAt": "2026-08-13T23:54:31+09:00", "discoveredAt": "2026-08-15T10:50:14.087637+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBkRm9MbThSU1ZJM3ZoQ0dBNGt1RVNXRy0xQW43M0d4b1hQbHFmY0RoN0pSRlU0WENaRXkzd25lNGZIVnk5LUU1UlNGTEN0MFNWY3V4UEVHUHliczFKclZrRkt3X2ZCU3ZJ?oc=5"}}, {"id": "sha1:3f09fac750a6e009", "title": "BTS star 金泰亨（V）在直播中揭露听力损失之战", "summary": "BTS star 金泰亨（V） 在直播期间透露听力损失之战 BBCBTS 的 金泰亨（V） 在世界巡演中透露右耳听力损失", "category": "event", "groups": ["BTS"], "publishedAt": "2026-08-13T13:09:12+09:00", "discoveredAt": "2026-08-15T10:50:07.346532+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1XS1lybFZ5OEFRaUhHWnNoOHFyV1NmTzg4elFiNDhHSWZ3c29QZmxNWkNocl9nbGFyLVNkb1FldkZuRXM0aG4wdmdwM0xvUUQyUXR5NDZLX1RIUQ?oc=5"}}, {"id": "sha1:c82acc8cf82b2622", "title": "aespa 推出 SYNK : COMPLæXITY 世界巡演并在首尔举办大型音乐会", "summary": "aespa 推出 SYNK : COMPLæXITY 世界巡演，并在首尔举行大规模音乐会 Power 106 (KPWR", "category": "event", "groups": ["aespa"], "publishedAt": "2026-08-11T18:49:13+09:00", "discoveredAt": "2026-08-15T10:50:14.087574+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQXzgyRDI0NlBpbEhnQkw3WUpLQjA5eGtVV2FOUTh4aVh1RXVTRExCeC1vSUYyYkNSSHpMZWNSUUEwTDYyN1Q5d3dkbU9IbE50ekt1MDlQTmt1VS1Ka3picU94d2N4WjJzczJPVk1mQV9mcW5BN2h5eVUxak04anl4bjUxNTZIQ1lQLThBNEZTOHhDb2hOTWFKWnhwOUtKV0RDZWVrdGE4RnpTRlFUOXc?oc=5"}}, {"id": "sha1:35ac70e758e8d309", "title": "aespa 在首尔推出 SYNK : COMPLæXITY 巡演：这是开幕之夜的曲目列表", "summary": "aespa 在首尔推出 SYNK : COMPLæXITY 巡演：这是开幕之夜的歌单 billboard.com", "category": "event", "groups": ["aespa"], "publishedAt": "2026-08-08T00:46:24+09:00", "discoveredAt": "2026-08-15T10:50:14.087464+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQc3BodDZ2VTVzQ09LOGJHOUhDbmdxN3FFUTlLT0tadnhhS2NCM19aZzhYQTh5NzNkbzBieHpQT0RXS0ZOV0NsdzNTenc0WktQQTZodzF4V0ZNTGJ4ME1vclY3Rk1fT3J0SU51N3M3ZTlwZ2xnT1F0Q3hFaWhNNzI5dXRVMU1mYWF5bzQ1MmtZbDdlYTQ?oc=5"}}, {"id": "sha1:a3673f4c0d819fb4", "title": "卡琳娜 (Karina) 成为匡威 aespa 北美巡演前的新全球代言人", "summary": "卡琳娜 (Karina) 成为匡威 aespa 北美巡演《福布斯》的新全球代言人", "category": "event", "groups": ["aespa"], "publishedAt": "2026-08-06T22:00:01+09:00", "discoveredAt": "2026-08-15T10:50:14.087501+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOUkhKakQ5UldpaTRYbVFkdlpFX3MySFpwNnliMnFpOTE2ZlBabDdWSGhuWmNjVXJOdTBldVJjSTNoTGVYcDhmY18zNDRjRHh0ZmVuRXVCZ29SZUgwRjJEQTlxdkpnZjB2cWVHb2phcHkyTGZua3llMjV0NWxfdHNHeUNuVkhaVmNyZ3FFR2xIaEFzZHpiVzFaRmFmTUZlSnRpM3p6c2JqbjBwQQ?oc=5"}}, {"id": "sha1:9205c56634fdfffe", "title": "[通知] 如何观看LE SSERAFIM TOUR 'EASY CRAZY HOT' ENCORE IN SEOUL DC VOD", "summary": "[通知] 如何观看 LE SSERAFIM TOUR 'EASY CRAZY HOT' ENCORE IN SEOUL ", "category": "event", "groups": ["LE SSERAFIM"], "publishedAt": "2026-07-02T18:30:19+09:00", "discoveredAt": "2026-08-15T10:50:09.891985+09:00", "source": {"name": "Google News"}, "links": {"original": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFB4TGNfWEtBTGlIdjhEV3lTSE1JNEJNcWU4M0lidFhoSGJfOTdLZmpMX0NEb0tfZGNtWV9hNWowQVBldW9xNVVVWTRvSGZvdTd2M0hULQ?oc=5"}}]}, {"label": "数据·榜单", "items": [{"id": "chart-2026-08-12-1", "title": "SWIM — 방탄소년단", "summary": "Circle 单曲榜第1位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 1}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-2", "title": "Golden — HUNTR/X, EJAE, AUDREY NUNA, REI AMI, KPop Demon Hunters Cast", "summary": "Circle 单曲榜第2位（仅单源）", "category": "chart", "groups": ["HUNTR/X, EJAE, AUDREY NUNA, REI AMI, KPop Demon Hunters Cast"], "perSourceRank": {"circle": 2}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-3", "title": "BAD — ATEEZ (에이티즈)", "summary": "Circle 单曲榜第3位（仅单源）", "category": "chart", "groups": ["ATEEZ (에이티즈)"], "perSourceRank": {"circle": 3}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-4", "title": "APT. — 로제 (ROSE), Bruno Mars", "summary": "Circle 单曲榜第4位（仅单源）", "category": "chart", "groups": ["로제 (ROSE), Bruno Mars"], "perSourceRank": {"circle": 4}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-5", "title": "REDRED — CORTIS (코르티스)", "summary": "Circle 单曲榜第5位（仅单源）", "category": "chart", "groups": ["CORTIS (코르티스)"], "perSourceRank": {"circle": 5}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-6", "title": "It`s Me — 아일릿(ILLIT)", "summary": "Circle 单曲榜第6位（仅单源）", "category": "chart", "groups": ["아일릿(ILLIT)"], "perSourceRank": {"circle": 6}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-7", "title": "This & That — Stray Kids (스트레이 키즈)", "summary": "Circle 单曲榜第7位（仅单源）", "category": "chart", "groups": ["Stray Kids (스트레이 키즈)"], "perSourceRank": {"circle": 7}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-8", "title": "Less than a Lover — 제니 (JENNIE)", "summary": "Circle 单曲榜第8位（仅单源）", "category": "chart", "groups": ["제니 (JENNIE)"], "perSourceRank": {"circle": 8}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-9", "title": "ICONIC BY MISTAKE — LE SSERAFIM (르세라핌), 아일릿(ILLIT), KATSEYE", "summary": "Circle 单曲榜第9位（仅单源）", "category": "chart", "groups": ["LE SSERAFIM (르세라핌), 아일릿(ILLIT), KATSEYE"], "perSourceRank": {"circle": 9}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-10", "title": "LEMONADE — aespa", "summary": "Circle 单曲榜第10位（仅单源）", "category": "chart", "groups": ["aespa"], "perSourceRank": {"circle": 10}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-11", "title": "Pop Off Pop Off — KiiiKiii (키키)", "summary": "Circle 单曲榜第11位（仅单源）", "category": "chart", "groups": ["KiiiKiii (키키)"], "perSourceRank": {"circle": 11}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-12", "title": "Body to Body — 방탄소년단", "summary": "Circle 单曲榜第12位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 13}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-13", "title": "Hooligan — 방탄소년단", "summary": "Circle 单曲榜第13位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 14}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-14", "title": "2.0 — 방탄소년단", "summary": "Circle 单曲榜第14位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 15}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-15", "title": "LOVE ATTACK — RESCENE (리센느)", "summary": "Circle 单曲榜第15位（仅单源）", "category": "chart", "groups": ["RESCENE (리센느)"], "perSourceRank": {"circle": 16}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-16", "title": "뛰어(JUMP) — BLACKPINK", "summary": "Circle 单曲榜第16位（仅单源）", "category": "chart", "groups": ["BLACKPINK"], "perSourceRank": {"circle": 17}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-17", "title": "Soda Pop — KPop Demon Hunters Cast, 대니 정, Saja Boys, Andrew Choi, Neckwav, Kevin Woo, samUIL Lee", "summary": "Circle 单曲榜第17位（仅单源）", "category": "chart", "groups": ["KPop Demon Hunters Cast, 대니 정, Saja Boys, Andrew Choi, Neckwav, Kevin Woo, samUIL Lee"], "perSourceRank": {"circle": 18}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-18", "title": "RUDE! — Hearts2Hearts (하츠투하츠)", "summary": "Circle 单曲榜第18位（仅单源）", "category": "chart", "groups": ["Hearts2Hearts (하츠투하츠)"], "perSourceRank": {"circle": 19}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-19", "title": "like JENNIE — 제니 (JENNIE)", "summary": "Circle 单曲榜第19位（仅单源）", "category": "chart", "groups": ["제니 (JENNIE)"], "perSourceRank": {"circle": 20}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-20", "title": "Pretty Girl — RESCENE (리센느)", "summary": "Circle 单曲榜第20位（仅单源）", "category": "chart", "groups": ["RESCENE (리센느)"], "perSourceRank": {"circle": 21}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-21", "title": "Aliens — 방탄소년단", "summary": "Circle 单曲榜第21位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 22}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-22", "title": "Dynamite — 방탄소년단", "summary": "Circle 单曲榜第22位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 23}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-23", "title": "Come Over — 방탄소년단", "summary": "Circle 单曲榜第23位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 24}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-24", "title": "캐치 캐치 — YENA(최예나)", "summary": "Circle 单曲榜第24位（仅单源）", "category": "chart", "groups": ["YENA(최예나)"], "perSourceRank": {"circle": 25}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-25", "title": "FYA — 방탄소년단", "summary": "Circle 单曲榜第25位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 26}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-26", "title": "they don`t know `bout us — 방탄소년단", "summary": "Circle 单曲榜第26位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 27}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-27", "title": "Like Animals — 방탄소년단", "summary": "Circle 单曲榜第27位（仅单源）", "category": "chart", "groups": ["방탄소년단"], "perSourceRank": {"circle": 28}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-28", "title": "Deja Vu — RESCENE (리센느)", "summary": "Circle 单曲榜第28位（仅单源）", "category": "chart", "groups": ["RESCENE (리센느)"], "perSourceRank": {"circle": 29}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-29", "title": "Magnetic — 아일릿(ILLIT)", "summary": "Circle 单曲榜第29位（仅单源）", "category": "chart", "groups": ["아일릿(ILLIT)"], "perSourceRank": {"circle": 30}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}, {"id": "chart-2026-08-12-30", "title": "Angel — 윤미래, 타이거JK, 비지", "summary": "Circle 单曲榜第30位（仅单源）", "category": "chart", "groups": ["윤미래, 타이거JK, 비지"], "perSourceRank": {"circle": 31}, "publishedAt": "2026-08-12T00:00:00+09:00", "discoveredAt": "2026-08-12T07:00:00+09:00", "source": {"name": "榜单交叉"}, "links": {"original": ""}}]}]};
+const EMBED_SEED = {"version": "2.0", "profile": {"nickname": "", "groups": [], "budget": {"year": 2026, "limit": 12000}}, "events": [{"group": "LE SSERAFIM", "type": "birthday", "title": "成员生日", "startDate": "2026-09-14", "repeat": "yearly", "id": "e5ec55976c2b", "createdAt": "2026-08-25T15:42:29+00:00", "updatedAt": "2026-08-25T15:42:29+00:00"}, {"group": "IVE", "type": "ticketing", "title": "IVE 首尔演唱会 抢票日", "startDate": "2026-08-28", "location": "首尔 KSPO DOME", "ticketStatus": "upcoming", "id": "d7998395e4df", "createdAt": "2026-08-25T15:42:39+00:00", "updatedAt": "2026-08-25T15:42:39+00:00"}], "cons": [{"group": "TWICE", "title": "TWICE WORLD TOUR 首尔场", "date": "2025-11-22", "city": "首尔", "venue": "KSPO DOME", "seat": "内场 A 区 5 排 12 号", "ticketPrice": 1280, "mood": 5, "expenses": [{"type": "ticket", "amount": 1280, "note": "内场票"}, {"type": "transport", "amount": 1200, "originalAmount": "220000", "originalCurrency": "KRW", "note": "往返机票"}, {"type": "hotel", "amount": 900, "note": "两晚住宿"}, {"type": "food", "amount": 300, "note": "餐饮"}, {"type": "merch", "amount": 450, "note": "场外加购周边"}], "setlist": ["SIGNAL", "FANCY", "TT", "What is Love?"], "seatImage": "assets/twice_con.jpg", "review": "人生第一场海外 con，哭成狗，但值了", "id": "e8aeafc2feb6", "createdAt": "2026-08-25T16:14:59+00:00", "updatedAt": "2026-08-25T16:14:59+00:00"}, {"group": "LE SSERAFIM", "title": "LE SSERAFIM TOUR 上海场", "date": "2025-09-13", "city": "上海", "venue": "梅赛德斯奔驰文化中心", "seat": "看台 B 区 18 排", "ticketPrice": 980, "mood": 4, "expenses": [{"type": "ticket", "amount": 980}, {"type": "transport", "amount": 80, "note": "高铁往返"}, {"type": "food", "amount": 200, "note": "周边餐饮"}], "setlist": ["FEARLESS", "UNFORGIVEN", "Perfect Night"], "seatImage": "assets/lsf_con.jpg", "review": "晚上场氛围绝了，EASY 太顶", "id": "16de42c57df6", "createdAt": "2026-08-25T16:14:59+00:00", "updatedAt": "2026-08-25T16:14:59+00:00"}], "items": [{"kind": "album", "status": "owned", "group": "TWICE", "name": "THIS IS FOR 专辑", "version": "1st Album", "platform": "k4", "purchasedDate": "2025-12-01", "amount": 199, "note": "生日礼物", "id": "cbcab3456399", "createdAt": "2026-08-25T16:00:49+00:00", "updatedAt": "2026-08-25T16:00:49+00:00"}, {"kind": "photocard", "status": "ordered", "group": "LE SSERAFIM", "name": "金采源（Chaewon）小卡", "version": "1/3 放大镜版", "platform": "xianyu", "amount": 45, "id": "20c1669b7331", "createdAt": "2026-08-25T16:00:49+00:00", "updatedAt": "2026-08-25T16:00:49+00:00"}, {"kind": "merch", "status": "wishlist", "group": "IVE", "name": "官方应援棒 ver.3", "platform": "amazon_jp", "originalAmount": "3980", "originalCurrency": "JPY", "id": "1bea51ffd482", "createdAt": "2026-08-25T16:00:49+00:00", "updatedAt": "2026-08-25T16:00:49+00:00"}, {"kind": "album", "status": "sold", "group": "aespa", "name": "MY WORLD (1/3)", "platform": "offline", "purchasedDate": "2024-06-10", "amount": 120, "note": "已出物", "id": "de5f3e68154b", "createdAt": "2026-08-25T16:00:50+00:00", "updatedAt": "2026-08-25T16:00:50+00:00"}]};
+
+/* ---------- 日报渲染（示例速览） ---------- */
+function isChartSec(label) { return /榜单|chart/i.test(label || ''); }
+
+function renderDaily() {
+  const d = state.daily;
+  if (!d) return;
+  $('#hero-date').textContent = 'DAILY BRIEFING · ' + (d.date || '') + ' · 示例';
+  $('#hero-lead').textContent = (d.lead || '今日暂无头条').slice(0, 130);
+  const fl = $('#flashes'); fl.innerHTML = '';
+  (d.flashes || []).slice(0, 5).forEach(f => {
+    const a = document.createElement('a');
+    a.className = 'flash'; a.textContent = f.text || '';
+    a.href = f.link || '#'; a.target = '_blank'; a.rel = 'noopener';
+    fl.appendChild(a);
+  });
+  const secBox = $('#news-sections'); secBox.innerHTML = '';
+  const chartBox = $('#chart-list'); chartBox.innerHTML = '';
+  let chartSeen = false;
+  (d.sections || []).forEach(s => {
+    const items = s.items || [];
+    if (isChartSec(s.label)) {
+      if (!chartSeen) {
+        chartSeen = true;
+        const it0 = items[0] || {};
+        const srcKeys = Object.keys(it0.perSourceRank || {}).map(k => k.charAt(0).toUpperCase() + k.slice(1));
+        const srcName = srcKeys.length ? srcKeys.join(' + ') : ((it0.source && it0.source.name) || '音源榜');
+        const idm = String(it0.id || '').match(/(\d{4}-\d{2}-\d{2})/);
+        const chartDate = idm ? idm[1] : (d.date || '');
+        let hhmm = '';
+        const pT = it0.publishedAt || '';
+        if (pT.includes('T')) { const t = pT.split('T')[1].slice(0, 5); if (t && t !== '00:00') hhmm = t; }
+        if (!hhmm && it0.discoveredAt && it0.discoveredAt.includes('T')) { const t = it0.discoveredAt.split('T')[1].slice(0, 5); if (t) hhmm = t; }
+        $('#chart-title').textContent = `数据 · 榜单（${srcName}）`;
+        $('#chart-meta').textContent = hhmm ? `榜单截至 ${chartDate} ${hhmm}（KST）` : `榜单日期 ${chartDate} · 实时排名`;
+      }
+      items.forEach(it => {
+        const rank = (it.perSourceRank && (it.perSourceRank.melon ?? it.perSourceRank.circle)) || it.rank || '';
+        const artist = it.artist || it.album || '';
+        const el = document.createElement('div'); el.className = 'crow';
+        el.innerHTML = `<span class="rank">${esc(rank ? '#' + rank : '·')}</span><span class="t">${esc(it.title)}</span>` + (artist ? `<span class="a">${esc(artist)}</span>` : '');
+        chartBox.appendChild(el);
+      });
+      return;
+    }
+    const secEl = document.createElement('div'); secEl.className = 'news-sec';
+    secEl.innerHTML = `<div class="sec-head"><h3>${esc(s.label)}</h3><span class="cnt">${items.length} 条</span></div><div class="news-grid"></div>`;
+    const grid = $('.news-grid', secEl);
+    items.forEach(it => {
+      const canLink = ['comeback', 'stage', 'event'].includes(it.category) && (it.groups || []).length;
+      const src = (it.source && it.source.name) || '';
+      const groups = (it.groups || []).slice(0, 4);
+      const card = document.createElement('div'); card.className = 'item-card';
+      card.innerHTML = `
+        <div class="item-top">${src ? `<span class="src">${esc(src)}</span>` : ''}${it.category ? `<span class="src">${esc(it.category)}</span>` : ''}</div>
+        <div class="item-title">${esc(it.title)}</div>
+        ${it.summary ? `<div class="item-sum">${esc(it.summary)}</div>` : ''}
+        <div class="item-foot">
+          <div class="groups">${groups.map(g => `<span class="grp">${esc(g)}</span>`).join('')}</div>
+          ${canLink ? `<button class="btn-add-ev" data-group="${esc(groups[0])}" data-title="${esc(it.title)}" data-cat="${esc(it.category)}" data-id="${esc(it.id)}" data-url="${esc((it.links && it.links.original) || '')}">＋ 加入日程</button>` : ''}
+        </div>`;
+      grid.appendChild(card);
+    });
+    secBox.appendChild(secEl);
+  });
+}
+
+/* ---------- 日程区 ---------- */
+function nextDate(ev) {
+  const base = ev.startDate || '';
+  if (!base || !/^\d{4}-\d{2}-\d{2}/.test(base)) return null;
+  if (ev.repeat === 'yearly') {
+    const now = new Date();
+    const d = new Date(now.getFullYear(), +base.slice(5, 7) - 1, +base.slice(8, 10));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (d < today) d.setFullYear(now.getFullYear() + 1);
+    return d;
+  }
+  return new Date(base.slice(0, 10) + 'T00:00:00');
+}
+function fmtMMDD(dt) { return `${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`; }
+function renderEvents() {
+  const list = $('#event-list'); list.innerHTML = '';
+  const evs = (state.data.events || []).map(ev => ({ ev, nd: nextDate(ev) })).filter(x => x.nd).sort((a, b) => a.nd - b.nd);
+  $('#event-hint').style.display = evs.length ? 'none' : 'block';
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  evs.slice(0, 14).forEach(({ ev, nd }) => {
+    const diff = Math.round((nd - today) / 86400000);
+    const due = diff >= 0 && diff <= 7;
+    const sub = [];
+    if (ev.type) sub.push(TYPE_LABEL[ev.type] || ev.type);
+    if (ev.location) sub.push(ev.location);
+    if (ev.ticketStatus) sub.push(TICKET_LABEL[ev.ticketStatus] || ev.ticketStatus);
+    const badge = due ? '7天内' : fmtMMDD(nd) + (ev.repeat === 'yearly' ? '·年' : diff < 0 ? '·已过' : '');
+    const el = document.createElement('div'); el.className = 'evt' + (due ? ' due' : '');
+    el.innerHTML = `<span class="evt-date">${esc(badge)}</span><div class="evt-body"><div class="evt-title">${esc(ev.title)}</div><div class="evt-sub">${esc(sub.join(' · '))}</div></div><button class="evt-del" data-id="${esc(ev.id)}" title="删除">✕</button>`;
+    list.appendChild(el);
+  });
+}
+
+/* ---------- 收藏区 ---------- */
+function renderItems() {
+  const f = state.itemFilter || { status: 'all', kind: 'all' };
+  const list = $('#item-list'); list.innerHTML = '';
+  const all = state.data.items || [];
+  const items = all.filter(it => {
+    if (f.status !== 'all' && (it.status || 'owned') !== f.status) return false;
+    if (f.kind !== 'all' && it.kind !== f.kind) return false;
+    return true;
+  });
+  $('#item-hint').style.display = all.length ? 'none' : 'block';
+  items.forEach(it => {
+    const st = it.status || 'owned';
+    const thumb = it.image
+      ? `<div class="ithumb"><span class="ph">${esc(KIND_ICON[it.kind] || '★')}</span><img src="${esc(it.image)}" alt="" onerror="this.remove()"></div>`
+      : `<div class="ithumb"><span class="ph">${esc(KIND_ICON[it.kind] || '★')}</span></div>`;
+    const amt = it.amount != null ? `<span class="iamt">¥${Number(it.amount).toLocaleString()}</span>` : '';
+    const orig = (it.originalAmount != null && it.originalCurrency) ? `<span class="iorig">原 ${esc(it.originalCurrency)} ${esc(it.originalAmount)}</span>` : '';
+    const meta = [PLATFORM_LABEL[it.platform] || '', it.purchasedDate || ''].filter(Boolean).join(' · ');
+    const card = document.createElement('div'); card.className = 'item-card2';
+    card.innerHTML = `
+      ${thumb}
+      <div class="icard-body">
+        <div class="icard-top"><span class="badge ${STATUS_CLASS[st]}">${STATUS_LABEL[st]}</span><span class="ikind">${KIND_LABEL[it.kind] || '其他'}</span></div>
+        <div class="iname"><b>${esc(it.group || '未填团体')}</b> <span class="sep">·</span> ${esc(it.name || '未命名')}</div>
+        ${it.version ? `<div class="iver">${esc(it.version)}</div>` : ''}
+        ${meta ? `<div class="imeta">${esc(meta)}</div>` : ''}
+        <div class="iprice">${amt}${orig ? ' ' + orig : ''}</div>
+        ${it.note ? `<div class="inote">${esc(it.note)}</div>` : ''}
+      </div>
+      <div class="icard-actions"><button class="mini edit" data-id="${esc(it.id)}">编辑</button><button class="mini del" data-id="${esc(it.id)}">删除</button></div>`;
+    list.appendChild(card);
+  });
+}
+function openItemModal(it) {
+  $('#item-modal-title').textContent = it ? '编辑收藏' : '新增收藏';
+  $('#i-id').value = it ? it.id : '';
+  $('#i-kind').value = (it && it.kind) || 'album';
+  $('#i-status').value = (it && it.status) || 'owned';
+  $('#i-group').value = (it && it.group) || '';
+  $('#i-name').value = (it && it.name) || '';
+  $('#i-version').value = (it && it.version) || '';
+  $('#i-platform').value = (it && it.platform) || '';
+  $('#i-date').value = (it && it.purchasedDate) || '';
+  $('#i-amount').value = (it && it.amount != null) ? it.amount : '';
+  $('#i-orig').value = (it && it.originalAmount != null) ? it.originalAmount : '';
+  $('#i-origc').value = (it && it.originalCurrency) || '';
+  $('#i-image').value = (it && it.image) || '';
+  $('#i-note').value = (it && it.note) || '';
+  $('#item-mask').hidden = false;
+  $('#i-name').focus();
+}
+function closeItemModal() { $('#item-mask').hidden = true; }
+
+/* ---------- Con 记忆区 ---------- */
+function fillConGroupFilters(cons) {
+  const wrap = $('#con-group-filters');
+  const cur = (state.conFilter || {}).group || 'all';
+  const groups = [...new Set(cons.map(c => c.group).filter(Boolean))].sort();
+  const key = groups.join(',');
+  if (wrap.dataset.built === '1' && wrap.dataset.gkey === key) {
+    $$('#con-group-filters .chip').forEach(x => x.classList.toggle('active', x.dataset.group === cur));
+    return;
+  }
+  wrap.dataset.built = '1'; wrap.dataset.gkey = key;
+  wrap.innerHTML = `<button class="chip ${cur === 'all' ? 'active' : ''}" data-group="all">全部</button>` + groups.map(g => `<button class="chip ${cur === g ? 'active' : ''}" data-group="${esc(g)}">${esc(g)}</button>`).join('');
+}
+function renderCons() {
+  const fg = (state.conFilter || {}).group || 'all';
+  const list = $('#con-list'); list.innerHTML = '';
+  const all = state.data.cons || [];
+  fillConGroupFilters(all);
+  const cons = all.filter(c => fg === 'all' || c.group === fg).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  $('#con-hint').style.display = all.length ? 'none' : 'block';
+  cons.forEach(c => {
+    const img = c.seatImage
+      ? `<div class="cthumb"><span class="cph">演</span><img src="${esc(c.seatImage)}" alt="" onerror="this.remove()"></div>`
+      : `<div class="cthumb"><span class="cph">演</span></div>`;
+    const price = c.ticketPrice != null ? `<span class="cprice">票 ¥${Number(c.ticketPrice).toLocaleString()}</span>` : '';
+    const totalExp = (c.expenses || []).reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const expLine = totalExp > 0 ? `<span class="cexp">花销 ¥${totalExp.toLocaleString()}</span>` : '';
+    const mood = c.mood ? `<span class="cmood">${MOOD_STAR[c.mood] || ''}</span>` : '';
+    const meta = [c.venue, c.city].filter(Boolean).join(' · ');
+    const sub = [c.date, meta, c.seat].filter(Boolean).join(' · ');
+    const setN = (c.setlist || []).length;
+    const card = document.createElement('div'); card.className = 'con-card';
+    card.innerHTML = `
+      ${img}
+      <div class="ccard-body">
+        <div class="ccard-top"><span class="cgroup">${esc(c.group || '未填团体')}</span>${mood}</div>
+        <div class="ctitle">${esc(c.title || '未命名')}</div>
+        <div class="cmeta">${esc(sub)}</div>
+        <div class="cpriceline">${price}${expLine}</div>
+        ${setN ? `<div class="cset">歌单 ${setN} 首</div>` : ''}
+        ${c.review ? `<div class="crev">${esc(c.review)}</div>` : ''}
+      </div>
+      <div class="icard-actions"><button class="mini edit" data-id="${esc(c.id)}">编辑</button><button class="mini del" data-id="${esc(c.id)}">删除</button></div>`;
+    list.appendChild(card);
+  });
+}
+function addExpRow(wrap, e) {
+  const row = document.createElement('div'); row.className = 'exp-row';
+  const opts = Object.entries(EXP_LABEL).map(([k, v]) => `<option value="${k}" ${(e && e.type === k) ? 'selected' : ''}>${v}</option>`).join('');
+  row.innerHTML = `
+    <select class="exp-type">${opts}</select>
+    <input class="exp-amt" type="number" min="0" step="0.01" placeholder="CNY" value="${e && e.amount != null ? e.amount : ''}">
+    <input class="exp-orig" type="text" placeholder="原币种金额" value="${e && e.originalAmount != null ? esc(e.originalAmount) : ''}">
+    <input class="exp-origc" type="text" placeholder="币种" value="${e && e.originalCurrency ? esc(e.originalCurrency) : ''}">
+    <input class="exp-note" type="text" placeholder="备注" value="${e && e.note ? esc(e.note) : ''}">
+    <button type="button" class="exp-del" title="删除">✕</button>`;
+  wrap.appendChild(row);
+}
+function renderExpRows(wrap, expenses) {
+  wrap.innerHTML = '';
+  if (!expenses || !expenses.length) { addExpRow(wrap); return; }
+  expenses.forEach(e => addExpRow(wrap, e));
+}
+function readExpRows() {
+  const out = [];
+  $$('#c-exp-wrap .exp-row').forEach(r => {
+    const type = r.querySelector('.exp-type').value;
+    const amount = r.querySelector('.exp-amt').value;
+    const orig = r.querySelector('.exp-orig').value.trim();
+    const origc = r.querySelector('.exp-origc').value.trim();
+    const note = r.querySelector('.exp-note').value.trim();
+    if (!amount && !orig && !note) return;
+    const e = { type: type || 'other' };
+    if (amount) e.amount = Number(amount);
+    if (orig) e.originalAmount = orig;
+    if (origc) e.originalCurrency = origc;
+    if (note) e.note = note;
+    out.push(e);
+  });
+  return out;
+}
+function openConModal(c) {
+  $('#con-modal-title').textContent = c ? '编辑 Con 记忆' : '新增 Con 记忆';
+  $('#c-id').value = c ? c.id : '';
+  $('#c-group').value = (c && c.group) || '';
+  $('#c-title').value = (c && c.title) || '';
+  $('#c-date').value = (c && c.date) || todayStr();
+  $('#c-city').value = (c && c.city) || '';
+  $('#c-venue').value = (c && c.venue) || '';
+  $('#c-seat').value = (c && c.seat) || '';
+  $('#c-price').value = (c && c.ticketPrice != null) ? c.ticketPrice : '';
+  $('#c-mood').value = (c && c.mood) ? String(c.mood) : '';
+  $('#c-orig').value = (c && c.ticketOriginal && c.ticketOriginal.amount != null) ? c.ticketOriginal.amount : '';
+  $('#c-origc').value = (c && c.ticketOriginal && c.ticketOriginal.currency) ? c.ticketOriginal.currency : '';
+  $('#c-setlist').value = (c && c.setlist) ? c.setlist.join('\n') : '';
+  $('#c-image').value = c ? (c.seatImage || '') : '';
+  $('#c-review').value = c ? (c.review || '') : '';
+  renderExpRows($('#c-exp-wrap'), c ? (c.expenses || []) : []);
+  $('#con-mask').hidden = false;
+  $('#c-title').focus();
+}
+function closeConModal() { $('#con-mask').hidden = true; }
+
+/* ---------- 日程弹窗 ---------- */
+function openEventModal(ev, prefill) {
+  $('#modal-title').textContent = ev ? '编辑日程' : '新增日程';
+  $('#f-id').value = ev ? ev.id : '';
+  $('#f-group').value = (prefill && prefill.group) || (ev && ev.group) || '';
+  $('#f-type').value = (prefill && prefill.cat) || (ev && ev.type) || 'other';
+  $('#f-title').value = (prefill && prefill.title) || (ev && ev.title) || '';
+  $('#f-start').value = (prefill && prefill.start) || (ev && ev.startDate) || todayStr();
+  $('#f-end').value = (ev && ev.endDate) || '';
+  $('#f-location').value = (ev && ev.location) || '';
+  $('#f-ticket').value = (ev && ev.ticketStatus) || '';
+  $('#f-repeat').value = (ev && ev.repeat) || 'none';
+  $('#f-note').value = (ev && ev.note) || '';
+  state.prefill = prefill || null;
+  $('#modal-mask').hidden = false;
+  $('#f-title').focus();
+}
+function closeModal() { $('#modal-mask').hidden = true; }
+
+/* ---------- 账本统计（本地计算） ---------- */
+function computeStats(d) {
+  const total = { v: 0 }, byCat = {}, monthly = {};
+  const add = (amount, cat, ym) => {
+    if (!amount) return;
+    total.v += amount;
+    byCat[cat] = Math.round(((byCat[cat] || 0) + amount) * 100) / 100;
+    if (ym) monthly[ym] = Math.round(((monthly[ym] || 0) + amount) * 100) / 100;
+  };
+  (d.cons || []).forEach(c => {
+    const tp = Number(c.ticketPrice) || 0;
+    add(tp, '演出票', (c.date || '').slice(0, 7));
+    (c.expenses || []).forEach(e => {
+      if (e.type === 'ticket') { if (!tp) add(Number(e.amount) || 0, '演出票', (c.date || '').slice(0, 7)); return; }
+      const key = ({ transport: '交通', hotel: '住宿', food: '餐饮', merch: '周边', other: '其他' })[e.type] || '其他';
+      add(Number(e.amount) || 0, key, (c.date || '').slice(0, 7));
+    });
+  });
+  (d.items || []).forEach(it => {
+    if (it.status === 'wishlist' || it.status === 'sold') return;
+    add(Number(it.amount) || 0, '专辑周边', (it.purchasedDate || '').slice(0, 7));
+  });
+  return {
+    total: Math.round(total.v * 100) / 100, byCategory: byCat,
+    monthly: Object.fromEntries(Object.entries(monthly).sort()),
+    conCount: (d.cons || []).length,
+    itemCount: (d.items || []).filter(x => x.status !== 'wishlist' && x.status !== 'sold').length
+  };
+}
+function renderLedger() {
+  const root = $('#ledger-root');
+  const stats = computeStats(state.data);
+  const budget = (state.data.profile && state.data.profile.budget) || { year: new Date().getFullYear(), limit: 0 };
+  const total = Number(stats.total) || 0;
+  const cats = CAT_ORDER.map(c => ({ name: c, val: (stats.byCategory && stats.byCategory[c]) || 0 })).filter(c => c.val > 0).sort((a, b) => b.val - a.val);
+  const monthly = stats.monthly || {};
+  const yKeys = Object.keys(monthly).filter(k => /^\d{4}-\d{2}$/.test(k)).sort();
+  const maxMonth = yKeys.length ? Math.max(...yKeys.map(k => monthly[k])) : 0;
+  const thisYear = String(budget.year || new Date().getFullYear());
+  const yearSpend = yKeys.filter(k => k.startsWith(thisYear)).reduce((s, k) => s + monthly[k], 0);
+  const remain = (budget.limit || 0) - yearSpend;
+  let acc = 0; const segs = [];
+  cats.forEach(c => { const p = total ? (c.val / total * 100) : 0; segs.push(`${CAT_COLOR[c.name]} ${acc.toFixed(2)}% ${(acc + p).toFixed(2)}%`); acc += p; });
+  const ring = total ? `conic-gradient(${segs.join(',')})` : 'var(--line)';
+  const legend = cats.length ? cats.map(c => {
+    const p = total ? Math.round(c.val / total * 100) : 0;
+    return `<li><span class="lg-dot" style="background:${CAT_COLOR[c.name]}"></span><span class="lg-name">${esc(c.name)}</span><span class="lg-val">¥${Number(c.val).toLocaleString()}</span><span class="lg-pct">${p}%</span></li>`;
+  }).join('') : `<li class="muted">暂无支出</li>`;
+  const BAR_H = 150;
+  const bars = yKeys.length ? yKeys.map(k => {
+    const v = monthly[k];
+    const h = maxMonth ? Math.round(v / maxMonth * BAR_H) : 0;
+    return `<div class="bar-col"><div class="bar" style="height:${h}px" title="¥${Number(v).toLocaleString()}"></div><span class="bar-x">${esc(k.slice(2))}</span><span class="bar-v">¥${Number(v).toLocaleString()}</span></div>`;
+  }).join('') : `<p class="hint">暂无月度数据</p>`;
+  let topMonth = '—', topVal = 0;
+  yKeys.forEach(k => { if (monthly[k] > topVal) { topVal = monthly[k]; topMonth = k; } });
+  const topCat = cats[0];
+  const budgetPct = (budget.limit) ? Math.min(100, Math.round(yearSpend / budget.limit * 100)) : 0;
+  root.innerHTML = `
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-label">累计总花费</span><span class="kpi-val">¥${Number(total).toLocaleString()}</span></div>
+      <div class="kpi"><span class="kpi-label">看过的 Con</span><span class="kpi-val">${stats.conCount || 0} 场</span></div>
+      <div class="kpi"><span class="kpi-label">已记录收藏</span><span class="kpi-val">${stats.itemCount || 0} 件</span></div>
+    </div>
+    <div class="card ledger-donut">
+      <div class="card-head"><h3>品类占比</h3></div>
+      <div class="donut-wrap">
+        <div class="donut" style="background:${ring}"><div class="donut-hole"><span>${total ? '¥' + Number(total).toLocaleString() : '暂无'}</span></div></div>
+        <ul class="legend">${legend}</ul>
+      </div>
+    </div>
+    <div class="card ledger-monthly">
+      <div class="card-head"><h3>月度花费趋势</h3></div>
+      <div class="bars">${bars}</div>
+    </div>
+    <div class="card ledger-budget">
+      <div class="card-head"><h3>年度预算 · ${esc(thisYear)}</h3></div>
+      ${budget.limit ? `
+        <div class="budget-line"><span>已用 ¥${Number(yearSpend).toLocaleString()}</span><span>预算 ¥${Number(budget.limit).toLocaleString()}</span></div>
+        <div class="budget-bar"><div class="budget-fill" style="width:${budgetPct}%"></div></div>
+        <p class="muted">${remain >= 0 ? '剩余 ¥' + Number(remain).toLocaleString() : '已超支 ¥' + Number(Math.abs(remain)).toLocaleString()}</p>
+      ` : `<p class="muted">未设置年度预算</p>`}
+    </div>
+    <div class="card ledger-year">
+      <div class="card-head"><h3>年度总结 · 截至 ${esc(todayStr())}</h3></div>
+      <ul class="year-list">
+        <li>累计总花费 <b>¥${Number(total).toLocaleString()}</b></li>
+        ${topMonth !== '—' ? `<li>最高消费月 <b>${esc(topMonth)}</b>（¥${Number(topVal).toLocaleString()}）</li>` : ''}
+        ${topCat ? `<li>最大支出品类 <b>${esc(topCat.name)}</b>（¥${Number(topCat.val).toLocaleString()}，${Math.round(topCat.val / total * 100)}%）</li>` : ''}
+        <li>看过 Con <b>${stats.conCount || 0}</b> 场，已记录收藏 <b>${stats.itemCount || 0}</b> 件</li>
+      </ul>
+      <p class="muted">* 仅统计 CNY 金额；原币种仅展示不汇总；种草 / 已出物不计入总账。数据随页面与资料库表格双向同步。</p>
+    </div>`;
+}
+
+/* ---------- 事件绑定 ---------- */
+function bindStatic() {
+  $$('.tab').forEach(t => t.addEventListener('click', () => {
+    $$('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    $$('.view').forEach(v => v.classList.remove('active'));
+    $('#view-' + t.dataset.view).classList.add('active');
+    if (t.dataset.view === 'ledger') renderLedger();
+  }));
+
+  $('#btn-add-event').addEventListener('click', () => openEventModal(null, null));
+  $('#modal-close').addEventListener('click', closeModal);
+  $('#btn-cancel').addEventListener('click', closeModal);
+  $('#modal-mask').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+  $('#btn-add-item').addEventListener('click', () => openItemModal(null));
+  $('#item-close').addEventListener('click', closeItemModal);
+  $('#i-cancel').addEventListener('click', closeItemModal);
+  $('#item-mask').addEventListener('click', e => { if (e.target === e.currentTarget) closeItemModal(); });
+
+  $('#btn-add-con').addEventListener('click', () => openConModal(null));
+  $('#con-close').addEventListener('click', closeConModal);
+  $('#c-cancel').addEventListener('click', closeConModal);
+  $('#con-mask').addEventListener('click', e => { if (e.target === e.currentTarget) closeConModal(); });
+  $('#c-add-exp').addEventListener('click', () => addExpRow($('#c-exp-wrap')));
+
+  /* 账本数据管理 */
+  $('#btn-export-json').addEventListener('click', () => download('kpop-note-data.json', JSON.stringify(state.data, null, 2), 'application/json'));
+  $('#btn-export-csv').addEventListener('click', () => {
+    const csvs = dataToCSV(state.data);
+    download('kpop-note-events.csv', csvs.events, 'text/csv;charset=utf-8');
+    download('kpop-note-items.csv', csvs.items, 'text/csv;charset=utf-8');
+    download('kpop-note-cons.csv', csvs.cons, 'text/csv;charset=utf-8');
+    toast('已导出 3 张 CSV');
+  });
+  $('#btn-import-json').addEventListener('click', () => $('#file-json').click());
+  $('#btn-import-csv').addEventListener('click', () => $('#file-csv').click());
+  $('#file-json').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    try {
+      const obj = JSON.parse(await f.text());
+      state.data = Object.assign(clone(EMBED_SEED), obj);
+      await saveAll('已导入 JSON');
+      renderEvents(); renderItems(); renderCons(); renderLedger(); fillGroupList();
+    } catch (err) { toast('导入失败：' + err.message); }
+  });
+  $('#file-csv').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    try {
+      const obj = csvToData(await f.text());
+      if (!obj) throw new Error('CSV 为空或格式不符');
+      if (obj.events.length) state.data.events = obj.events;
+      if (obj.items.length) state.data.items = obj.items;
+      if (obj.cons.length) state.data.cons = obj.cons;
+      await saveAll('已导入 CSV');
+      renderEvents(); renderItems(); renderCons(); renderLedger();
+    } catch (err) { toast('导入失败：' + err.message); }
+  });
+  $('#btn-reset-seed').addEventListener('click', async () => {
+    if (!confirm('恢复示例数据？当前记录将被覆盖（可先导出备份）。')) return;
+    state.data = clone(EMBED_SEED);
+    await saveAll('已恢复示例数据');
+    renderEvents(); renderItems(); renderCons(); renderLedger(); fillGroupList();
+  });
+
+  /* 事件委托 */
+  document.addEventListener('click', async e => {
+    const addBtn = e.target.closest('.btn-add-ev');
+    if (addBtn) {
+      openEventModal(null, { group: addBtn.dataset.group, cat: inferType(addBtn.dataset.cat, addBtn.dataset.title), title: addBtn.dataset.title, start: todayStr(), id: addBtn.dataset.id, url: addBtn.dataset.url });
+      return;
+    }
+    const delBtn = e.target.closest('.evt-del');
+    if (delBtn) {
+      if (!confirm('删除这条日程？')) return;
+      state.data.events = (state.data.events || []).filter(x => x.id !== delBtn.dataset.id);
+      await saveAll('日程已删除'); renderEvents();
+    }
+    const conFilterChip = e.target.closest('#con-group-filters .chip');
+    if (conFilterChip) {
+      state.conFilter = { group: conFilterChip.dataset.group };
+      $$('#con-group-filters .chip').forEach(x => x.classList.remove('active'));
+      conFilterChip.classList.add('active');
+      renderCons();
+      return;
+    }
+    const editCon = e.target.closest('.con-card .mini.edit');
+    if (editCon) { const c = (state.data.cons || []).find(x => x.id === editCon.dataset.id); if (c) openConModal(c); return; }
+    const delCon = e.target.closest('.con-card .mini.del');
+    if (delCon) {
+      if (!confirm('删除这条 Con 记忆？')) return;
+      state.data.cons = (state.data.cons || []).filter(x => x.id !== delCon.dataset.id);
+      await saveAll('记忆已删除'); renderCons();
+    }
+    const expDel = e.target.closest('.exp-del');
+    if (expDel) { expDel.closest('.exp-row').remove(); return; }
+    const editItem = e.target.closest('.mini.edit');
+    if (editItem) { const it = (state.data.items || []).find(x => x.id === editItem.dataset.id); if (it) openItemModal(it); return; }
+    const delItem = e.target.closest('.mini.del');
+    if (delItem) {
+      if (!confirm('删除这条收藏？')) return;
+      state.data.items = (state.data.items || []).filter(x => x.id !== delItem.dataset.id);
+      await saveAll('收藏已删除'); renderItems();
+    }
+  });
+
+  $('#event-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const rec = {
+      group: $('#f-group').value.trim(), type: $('#f-type').value, title: $('#f-title').value.trim(),
+      startDate: $('#f-start').value, endDate: $('#f-end').value || undefined,
+      location: $('#f-location').value.trim() || undefined, ticketStatus: $('#f-ticket').value || undefined,
+      repeat: $('#f-repeat').value, note: $('#f-note').value.trim() || undefined
+    };
+    if (state.prefill && state.prefill.id) rec.source = { type: 'daily', itemId: state.prefill.id, url: state.prefill.url, date: (state.daily || {}).date };
+    const id = $('#f-id').value;
+    if (id) { const i = (state.data.events || []).findIndex(x => x.id === id); if (i > -1) state.data.events[i] = Object.assign(state.data.events[i], rec); }
+    else { rec.id = uid(); state.data.events = state.data.events || []; state.data.events.push(rec); }
+    await saveAll(id ? '日程已更新' : '已加入日程'); renderEvents(); closeModal();
+  });
+
+  $('#item-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const rec = {
+      kind: $('#i-kind').value, status: $('#i-status').value, group: $('#i-group').value.trim(), name: $('#i-name').value.trim(),
+      version: $('#i-version').value.trim() || undefined, platform: $('#i-platform').value || undefined,
+      purchasedDate: $('#i-date').value || undefined,
+      amount: $('#i-amount').value ? Number($('#i-amount').value) : undefined,
+      originalAmount: $('#i-orig').value ? $('#i-orig').value : undefined,
+      originalCurrency: $('#i-origc').value.trim() || undefined,
+      image: $('#i-image').value.trim() || undefined, note: $('#i-note').value.trim() || undefined
+    };
+    if (rec.originalAmount && !rec.originalCurrency) rec.originalCurrency = 'JPY';
+    const id = $('#i-id').value;
+    if (id) { const i = (state.data.items || []).findIndex(x => x.id === id); if (i > -1) state.data.items[i] = Object.assign(state.data.items[i], rec); }
+    else { rec.id = uid(); state.data.items = state.data.items || []; state.data.items.push(rec); }
+    await saveAll(id ? '收藏已更新' : '已保存收藏'); renderItems(); closeItemModal();
+  });
+
+  $('#con-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const expenses = readExpRows();
+    const origAmount = $('#c-orig').value.trim();
+    const origCur = $('#c-origc').value.trim();
+    const setlistRaw = $('#c-setlist').value.trim();
+    const rec = {
+      group: $('#c-group').value.trim(), title: $('#c-title').value.trim(), date: $('#c-date').value,
+      city: $('#c-city').value.trim() || undefined, venue: $('#c-venue').value.trim() || undefined,
+      seat: $('#c-seat').value.trim() || undefined,
+      ticketPrice: $('#c-price').value ? Number($('#c-price').value) : undefined,
+      mood: $('#c-mood').value ? Number($('#c-mood').value) : undefined,
+      expenses: expenses.length ? expenses : undefined,
+      setlist: setlistRaw ? setlistRaw.split('\n').map(s => s.trim()).filter(Boolean) : undefined,
+      seatImage: $('#c-image').value.trim() || undefined, review: $('#c-review').value.trim() || undefined
+    };
+    if (origAmount) { rec.ticketOriginal = { amount: origAmount }; if (origCur) rec.ticketOriginal.currency = origCur; }
+    const id = $('#c-id').value;
+    if (id) { const i = (state.data.cons || []).findIndex(x => x.id === id); if (i > -1) state.data.cons[i] = Object.assign(state.data.cons[i], rec); }
+    else { rec.id = uid(); state.data.cons = state.data.cons || []; state.data.cons.push(rec); }
+    await saveAll(id ? '记忆已更新' : '已保存记忆'); renderCons(); closeConModal();
+  });
+
+  $$('#item-status-filters .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#item-status-filters .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active'); state.itemFilter.status = c.dataset.status; renderItems();
+  }));
+  $$('#item-kind-filters .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#item-kind-filters .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active'); state.itemFilter.kind = c.dataset.kind; renderItems();
+  }));
+}
+
+function fillGroupList() {
+  const set = new Set();
+  (state.data.profile.groups || []).forEach(g => set.add(g));
+  ((state.daily || {}).sections || []).forEach(s => (s.items || []).forEach(it => (it.groups || []).forEach(g => set.add(g))));
+  const dl = $('#group-list'); dl.innerHTML = '';
+  [...set].sort().forEach(g => { const o = document.createElement('option'); o.value = g; dl.appendChild(o); });
+}
+
+/* ---------- 启动 ---------- */
+async function init() {
+  const seed = clone(EMBED_SEED || { version: '2.0', profile: { nickname: '', groups: [], budget: { year: new Date().getFullYear(), limit: 12000 } }, events: [], cons: [], items: [] });
+  let data = null;
+  try { data = await DB.load(); } catch (e) { data = null; }
+  state.data = (data && (data.events || data.items || data.cons)) ? data : seed;
+  state.daily = EMBED_DAILY;
+  DB.badge();
+  $('#db-txt2').textContent = DB.mode === 'cloud' ? '云端同步' : '本地存储';
+  renderDaily(); renderEvents(); renderItems(); renderCons(); renderLedger(); fillGroupList(); bindStatic();
+}
+init();
+</script>
+</body>
+</html>

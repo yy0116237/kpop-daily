@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yy0116237/kpop-daily/raw/main/workbench/v2.schema.json",
+  "title": "KPOP DAILY 2.0 工作台数据契约",
+  "type": "object",
+  "required": ["version", "profile", "events", "cons", "items"],
+  "properties": {
+    "version": { "const": "2.0" },
+    "profile": {
+      "type": "object",
+      "required": ["nickname", "groups", "budget"],
+      "properties": {
+        "nickname": { "type": "string" },
+        "groups": { "type": "array", "items": { "type": "string" } },
+        "budget": {
+          "type": "object",
+          "required": ["year", "limit"],
+          "properties": {
+            "year": { "type": "integer" },
+            "limit": { "type": "number" }
+          }
+        }
+      }
+    },
+    "events": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+    "cons": { "type": "array", "items": { "$ref": "#/$defs/con" } },
+    "items": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["id", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      }
+    },
+    "event": {
+      "allOf": [{ "$ref": "#/$defs/base" }],
+      "required": ["group", "type", "title", "startDate"],
+      "properties": {
+        "group": { "type": "string" },
+        "type": {
+          "enum": ["comeback", "pre-release", "album", "showcase", "tour", "birthday", "anniversary", "ticketing", "other"]
+        },
+        "title": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "location": { "type": "string" },
+        "ticketStatus": { "enum": ["not_open", "upcoming", "won", "lost", "attended"] },
+        "repeat": { "enum": ["none", "yearly"] },
+        "source": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "daily" },
+            "itemId": { "type": "string" },
+            "url": { "type": "string" },
+            "date": { "type": "string", "format": "date" }
+          }
+        }
+      }
+    },
+    "con": {
+      "allOf": [{ "$ref": "#/$defs/base" }],
+      "required": ["group", "title", "date"],
+      "properties": {
+        "group": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "venue": { "type": "string" },
+        "city": { "type": "string" },
+        "seat": { "type": "string" },
+        "ticketPrice": { "type": "number" },
+        "ticketOriginal": {
+          "type": "object",
+          "properties": { "amount": { "type": "number" }, "currency": { "type": "string" } }
+        },
+        "expenses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "amount"],
+            "properties": {
+              "type": { "enum": ["ticket", "transport", "hotel", "food", "merch", "other"] },
+              "amount": { "type": "number" },
+              "originalAmount": { "type": "number" },
+              "originalCurrency": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "mood": { "type": "number", "minimum": 1, "maximum": 5 },
+        "review": { "type": "string" },
+        "setlist": { "type": "array", "items": { "type": "string" } },
+        "seatImage": { "type": "string" }
+      }
+    },
+    "item": {
+      "allOf": [{ "$ref": "#/$defs/base" }],
+      "required": ["kind", "group", "name"],
+      "properties": {
+        "kind": { "enum": ["album", "photocard", "merch", "other"] },
+        "group": { "type": "string" },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "purchasedDate": { "type": "string", "format": "date" },
+        "amount": { "type": "number" },
+        "originalAmount": { "type": "number" },
+        "originalCurrency": { "type": "string" },
+        "platform": { "enum": ["k4", "amazon_jp", "xianyu", "offline", "other"] },
+        "status": { "enum": ["wishlist", "ordered", "owned", "sold"] },
+        "image": { "type": "string" }
+      }
+    }
+  }
+}

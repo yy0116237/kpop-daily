@@ -1,0 +1,175 @@
+{
+  "version": "2.0",
+  "profile": {
+    "nickname": "",
+    "groups": [],
+    "budget": {
+      "year": 2026,
+      "limit": 12000
+    }
+  },
+  "events": [
+    {
+      "group": "LE SSERAFIM",
+      "type": "birthday",
+      "title": "成员生日",
+      "startDate": "2026-09-14",
+      "repeat": "yearly",
+      "id": "e5ec55976c2b",
+      "createdAt": "2026-08-25T15:42:29+00:00",
+      "updatedAt": "2026-08-25T15:42:29+00:00"
+    },
+    {
+      "group": "IVE",
+      "type": "ticketing",
+      "title": "IVE 首尔演唱会 抢票日",
+      "startDate": "2026-08-28",
+      "location": "首尔 KSPO DOME",
+      "ticketStatus": "upcoming",
+      "id": "d7998395e4df",
+      "createdAt": "2026-08-25T15:42:39+00:00",
+      "updatedAt": "2026-08-25T15:42:39+00:00"
+    }
+  ],
+  "cons": [
+    {
+      "group": "TWICE",
+      "title": "TWICE WORLD TOUR 首尔场",
+      "date": "2025-11-22",
+      "city": "首尔",
+      "venue": "KSPO DOME",
+      "seat": "内场 A 区 5 排 12 号",
+      "ticketPrice": 1280,
+      "mood": 5,
+      "expenses": [
+        {
+          "type": "ticket",
+          "amount": 1280,
+          "note": "内场票"
+        },
+        {
+          "type": "transport",
+          "amount": 1200,
+          "originalAmount": "220000",
+          "originalCurrency": "KRW",
+          "note": "往返机票"
+        },
+        {
+          "type": "hotel",
+          "amount": 900,
+          "note": "两晚住宿"
+        },
+        {
+          "type": "food",
+          "amount": 300,
+          "note": "餐饮"
+        },
+        {
+          "type": "merch",
+          "amount": 450,
+          "note": "场外加购周边"
+        }
+      ],
+      "setlist": [
+        "SIGNAL",
+        "FANCY",
+        "TT",
+        "What is Love?"
+      ],
+      "seatImage": "assets/twice_con.jpg",
+      "review": "人生第一场海外 con，哭成狗，但值了",
+      "id": "e8aeafc2feb6",
+      "createdAt": "2026-08-25T16:14:59+00:00",
+      "updatedAt": "2026-08-25T16:14:59+00:00"
+    },
+    {
+      "group": "LE SSERAFIM",
+      "title": "LE SSERAFIM TOUR 上海场",
+      "date": "2025-09-13",
+      "city": "上海",
+      "venue": "梅赛德斯奔驰文化中心",
+      "seat": "看台 B 区 18 排",
+      "ticketPrice": 980,
+      "mood": 4,
+      "expenses": [
+        {
+          "type": "ticket",
+          "amount": 980
+        },
+        {
+          "type": "transport",
+          "amount": 80,
+          "note": "高铁往返"
+        },
+        {
+          "type": "food",
+          "amount": 200,
+          "note": "周边餐饮"
+        }
+      ],
+      "setlist": [
+        "FEARLESS",
+        "UNFORGIVEN",
+        "Perfect Night"
+      ],
+      "seatImage": "assets/lsf_con.jpg",
+      "review": "晚上场氛围绝了，EASY 太顶",
+      "id": "16de42c57df6",
+      "createdAt": "2026-08-25T16:14:59+00:00",
+      "updatedAt": "2026-08-25T16:14:59+00:00"
+    }
+  ],
+  "items": [
+    {
+      "kind": "album",
+      "status": "owned",
+      "group": "TWICE",
+      "name": "THIS IS FOR 专辑",
+      "version": "1st Album",
+      "platform": "k4",
+      "purchasedDate": "2025-12-01",
+      "amount": 199,
+      "note": "生日礼物",
+      "id": "cbcab3456399",
+      "createdAt": "2026-08-25T16:00:49+00:00",
+      "updatedAt": "2026-08-25T16:00:49+00:00"
+    },
+    {
+      "kind": "photocard",
+      "status": "ordered",
+      "group": "LE SSERAFIM",
+      "name": "金采源（Chaewon）小卡",
+      "version": "1/3 放大镜版",
+      "platform": "xianyu",
+      "amount": 45,
+      "id": "20c1669b7331",
+      "createdAt": "2026-08-25T16:00:49+00:00",
+      "updatedAt": "2026-08-25T16:00:49+00:00"
+    },
+    {
+      "kind": "merch",
+      "status": "wishlist",
+      "group": "IVE",
+      "name": "官方应援棒 ver.3",
+      "platform": "amazon_jp",
+      "originalAmount": "3980",
+      "originalCurrency": "JPY",
+      "id": "1bea51ffd482",
+      "createdAt": "2026-08-25T16:00:49+00:00",
+      "updatedAt": "2026-08-25T16:00:49+00:00"
+    },
+    {
+      "kind": "album",
+      "status": "sold",
+      "group": "aespa",
+      "name": "MY WORLD (1/3)",
+      "platform": "offline",
+      "purchasedDate": "2024-06-10",
+      "amount": 120,
+      "note": "已出物",
+      "id": "de5f3e68154b",
+      "createdAt": "2026-08-25T16:00:50+00:00",
+      "updatedAt": "2026-08-25T16:00:50+00:00"
+    }
+  ]
+}
