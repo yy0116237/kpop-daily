@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """按用户偏好对日报新闻做个性化排序 + 筛选到 Top 30。
 不改动抓取/翻译/对齐逻辑，只读现有 JSON 重新打分、重排、裁剪。
-榜单版块(Circle 单源)原样保留, 不挤入 30 条竞争。
+榜单版块(Melon 单源)原样保留, 不挤入 30 条竞争。
 """
 import json, re, os
 
@@ -152,7 +152,7 @@ def main():
         "generations": sorted(GEN_PREF),
         "companies": sorted(COMPANY_PREF),
         "newsSelected": total_news,
-        "note": "新闻 4 版块按个性化打分取 Top 30; 数据·榜单为独立 Circle 单源, 不参与排序。",
+        "note": "新闻 4 版块按个性化打分取 Top 30; 数据·榜单为独立 Melon 单源, 不参与排序。",
     }
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
@@ -169,7 +169,7 @@ def main():
     L.append("> 按你的偏好量身定制：本命团 %s ｜ 女团为主 ｜ %s代 ｜ 公司 %s" % (fav_line, gen_line, comp_line))
     L.append("")
     L.append("- 生成时间: %s (KST)" % out["generatedAt"])
-    L.append("- 新闻精选: %d 条（Top 30，按个性化打分排序） ｜ 榜单: 独立 Circle 单源 %d 条" % (news_n, chart_n))
+    L.append("- 新闻精选: %d 条（Top 30，按个性化打分排序） ｜ 榜单: 独立 Melon 单源 %d 条" % (news_n, chart_n))
     L.append("")
     L.append("## 头条 Lead")
     L.append("")

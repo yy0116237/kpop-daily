@@ -87,8 +87,7 @@ function renderDaily() {
       if (!chartSeen) {
         chartSeen = true;
         const it0 = items[0] || {};
-        const srcKeys = Object.keys(it0.perSourceRank || {}).map(k => k.charAt(0).toUpperCase() + k.slice(1));
-        const srcName = srcKeys.length ? srcKeys.join(' + ') : ((it0.source && it0.source.name) || '音源榜');
+        const srcName = 'Melon';
         const idm = String(it0.id || '').match(/(\d{4}-\d{2}-\d{2})/);
         const chartDate = idm ? idm[1] : (state.dailyDate || '');
         let hhmm = '';
@@ -107,7 +106,7 @@ function renderDaily() {
           : `榜单日期 ${chartDate} · 实时排名`;
       }
       items.forEach(it => {
-        const rank = (it.perSourceRank && (it.perSourceRank.melon ?? it.perSourceRank.circle)) || it.rank || '';
+        const rank = (it.perSourceRank && it.perSourceRank.melon) || it.rank || '';
         const artist = it.artist || it.album || '';
         const el = document.createElement('div'); el.className = 'crow';
         el.innerHTML = `<span class="rank">${esc(rank ? '#' + rank : '·')}</span>` +
