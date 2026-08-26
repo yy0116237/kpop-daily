@@ -10,12 +10,12 @@
 | --- | --- | --- | --- |
 | 1.0 | 每日晨报生成器（WorkBuddy skill / 脚本） | 仓库根（SKILL.md / scripts/） | 自动抓新闻 + Melon 音源榜，按你的偏好排 Top 30，产出单文件 HTML 晨报 |
 | 2.0 本地版 | 零依赖本地工作台 | `workbench/` | 日报 × 日程 × 收藏 × Con 记忆 × 账本，Python 标准库 + JSON 本地运行（端口 8765） |
-| 2.0 资料库版 | 单文件轻应用（参赛版） | `kpop-note/` | **KPOP NOTE · 日报 × 记录**：HTML ↔ CSV 双向同步、数据在线存储，可发布为 workbuddy.link 链接 |
+| 2.0 资料库版 | 单文件轻应用 | `kpop-note/` | **KPOP NOTE · 日报 × 记录**：HTML ↔ CSV 双向同步、数据在线存储 |
 
 ### 快速开始
 - **1.0 晨报**：见下方《KPOP DAILY · for you（1.0 · 每日晨报）》完整说明；或把本仓库作为 skill 复制到 `~/.workbuddy/skills/kpop-daily/` 后，对 WorkBuddy 说「帮我生成今天的 KPOP 日报」。
 - **2.0 本地工作台**：`cd workbench && python server.py` → 打开 http://localhost:8765（数据存 `workbench/data.json`，日报联动读取上级 `dailies/`）。
-- **2.0 资料库版**：把 `kpop-note/kpop-note-workspace.html` 上传到 WorkBuddy 资料库 → 打开文件与配套 CSV 表格双向同步 → 「分享 → 发布为网站」得到 workbuddy.link 链接；离线打开自动降级本地存储，功能完整。
+- **2.0 资料库版**：把 `kpop-note/kpop-note-workspace.html` 上传到 WorkBuddy 资料库/其他agent → 打开文件与配套 CSV 表格双向同步 → 「分享 → 发布为网站」得到 workbuddy.link 链接；离线打开自动降级本地存储，功能完整。
 
 ---
 
@@ -100,7 +100,7 @@
 2. 在agent对话中说"帮我生成今天的 KPOP 日报"，skill 会自动加载并按流程执行。
 
 ### 方式 B：直接用脚本（任意 Python 环境）
-无需 WorkBuddy，只要有 Python 3.9+：
+只要有 Python 3.9+：
 
 ```bash
 cd kpop-daily-skill/scripts
