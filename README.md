@@ -13,9 +13,9 @@
 | 2.0 资料库版 | 单文件轻应用 | `kpop-note/` | **KPOP NOTE · 日报 × 记录**：HTML ↔ CSV 双向同步、数据在线存储 |
 
 ### 快速开始
-- **1.0 晨报**：见下方《KPOP DAILY · for you（1.0 · 每日晨报）》完整说明；或把本仓库作为 skill 复制到 `~/.workbuddy/skills/kpop-daily/` 后，对 WorkBuddy 说「帮我生成今天的 KPOP 日报」。
+- **1.0 晨报**：见下方《KPOP DAILY · for you（1.0 · 每日晨报）》完整说明；或把本仓库作为 skill 复制到 skill 仓库后，对agent说「帮我生成今天的 KPOP 日报」。
 - **2.0 本地工作台**：`cd workbench && python server.py` → 打开 http://localhost:8765（数据存 `workbench/data.json`，日报联动读取上级 `dailies/`）。
-- **2.0 资料库版**：把 `kpop-note/kpop-note-workspace.html` 上传到 WorkBuddy 资料库/其他agent → 打开文件与配套 CSV 表格双向同步 → 「分享 → 发布为网站」得到 workbuddy.link 链接；离线打开自动降级本地存储，功能完整。
+- **2.0 资料库版**：把 `kpop-note/kpop-note-workspace.html` 上传到agent → 打开文件与配套 CSV 表格双向同步 → 「分享 → 发布为网站」得到link 链接；离线打开自动降级本地存储，功能完整。
 
 ---
 
