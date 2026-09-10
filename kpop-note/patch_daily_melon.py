@@ -4,6 +4,7 @@
 import json, re, html, os, sys, time, urllib.request
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+DAILIES = os.path.join(os.path.dirname(BASE), "dailies")
 HDR = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
     "Accept-Language": "ko-KR,ko;q=0.8,en;q=0.6",
@@ -56,14 +57,15 @@ def fetch_melon(retries=5):
 
 def latest_daily_path():
     cands = []
-    for name in os.listdir(os.path.join(BASE, "dailies")):
+    for name in os.listdir(DAILIES):
         m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.json", name)
         if m:
             cands.append(m.group(1))
     if not cands:
         raise SystemExit("dailies/ 下没有日报 JSON")
     latest = max(cands)
-    return os.path.join(BASE, "dailies", latest + ".json"), latest
+    preferred = os.path.join(DAILIES, latest + ".personalized.json")
+    return (preferred if os.path.exists(preferred) else os.path.join(DAILIES, latest + ".json")), latest
 
 
 def main():

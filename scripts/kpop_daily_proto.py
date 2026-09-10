@@ -5,7 +5,7 @@ KPOP Daily — 最小可运行原型 (proves: 抓取 -> 归一Item -> 分5版块
 纯免费栈, 只读请求, 无前端. 复用 chart_align.py 做榜单共识对齐.
 运行: python kpop_daily_proto.py
 """
-import json, os, re, html, sys, datetime, hashlib, difflib, concurrent.futures as cf
+import argparse, json, os, re, html, sys, time, random, datetime, hashlib, difflib, concurrent.futures as cf
 import urllib.request, urllib.parse, urllib.error
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
@@ -17,6 +17,8 @@ import name_localization as nl
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 KST = datetime.timezone(datetime.timedelta(hours=9))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(SCRIPT_DIR)
 
 # 真实中文摘要层: 无 Key 免费翻译.
 # 后端优先 gtx (沙箱共享IP下当前可用), MyMemory 作兜底 (免费额度 5000 词/天, 常被429).
@@ -139,7 +141,7 @@ def pick_lead(items):
 
 
 # ---------------- 基础工具 ----------------
-def fetch(url, headers=None, data=None, timeout=25, retries=3):
+def fetch(url, headers=None, data=None, timeout=12, retries=2):
     h = dict(UA); h.update(headers or {})
     last = None
     for attempt in range(retries):
@@ -149,7 +151,8 @@ def fetch(url, headers=None, data=None, timeout=25, retries=3):
                 return r.read().decode("utf-8", "replace")
         except Exception as e:
             last = e
-            continue
+            if attempt < retries - 1:
+                time.sleep(min(2 ** attempt, 8) + random.random() * 0.5)
     raise last or RuntimeError("fetch failed: %s" % url)
 
 
@@ -345,7 +348,8 @@ def worker_soompi(acc):
 
 
 def worker_googlenews(acc):
-    for g in GROUPS:
+    def one_group(g):
+        items = []
         try:
             url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(g["name"])
                    + "&hl=en-US&gl=US&ceid=US:en")
@@ -354,16 +358,21 @@ def worker_googlenews(acc):
                 m = re.match(r"^(.*?)\s+-\s+[^-]+$", head)
                 title = m.group(1) if m else head
                 cat = detect_category(title + " " + r["desc"])
-                acc.append(make_item(title, r["link"], rss_to_kst(r["pub"]),
-                                     "Google News", "news", cat, [g["name"]], lang="en", desc=r["desc"]))
+                items.append(make_item(title, r["link"], rss_to_kst(r["pub"]),
+                                       "Google News", "news", cat, [g["name"]], lang="en", desc=r["desc"]))
         except Exception as e:
             print("  [googlenews:%s] FAIL" % g["name"], e)
-    print("  [googlenews] ok")
+        return items
+    with cf.ThreadPoolExecutor(max_workers=len(GROUPS)) as ex:
+        for items in ex.map(one_group, GROUPS):
+            acc.extend(items)
+    print("  [googlenews] done")
 
 
 YT_CACHE = {}
 def worker_youtube(acc):
-    for g in GROUPS:
+    def one_group(g):
+        items = []
         try:
             cid = YT_CACHE.get(g["yt"])
             if not cid:
@@ -374,7 +383,8 @@ def worker_youtube(acc):
                     m = re.search(r"channel_id=([A-Za-z0-9_\-]+)", page)
                 cid = m.group(1) if m else None
                 if not cid:
-                    print("  [youtube:%s] no channel_id" % g["yt"]); continue
+                    print("  [youtube:%s] no channel_id" % g["yt"])
+                    return items
                 YT_CACHE[g["yt"]] = cid
             xml = fetch("https://www.youtube.com/feeds/videos.xml?channel_id=%s" % cid)
             root = ET.fromstring(xml)
@@ -391,11 +401,15 @@ def worker_youtube(acc):
                 except Exception:
                     pass
                 cat = "comeback" if re.search(r"\b(mv|comeback|teaser|title track|music video)\b", title, re.I) else "trend"
-                acc.append(make_item(title, link, dt, "YouTube", "video", cat,
-                                     [g["name"]], lang="en", desc=""))
+                items.append(make_item(title, link, dt, "YouTube", "video", cat,
+                                       [g["name"]], lang="en", desc=""))
         except Exception as ex:
             print("  [youtube:%s] FAIL" % g["yt"], ex)
-    print("  [youtube] ok")
+        return items
+    with cf.ThreadPoolExecutor(max_workers=len(GROUPS)) as ex:
+        for items in ex.map(one_group, GROUPS):
+            acc.extend(items)
+    print("  [youtube] done")
 
 
 def worker_bugs(date):
@@ -437,7 +451,7 @@ def worker_melon(date):
 
 
 def worker_circle(date):
-    for back in range(0, 4):
+    for back in range(0, 3):
         d = (datetime.date.fromisoformat(date) - datetime.timedelta(days=back)).isoformat()
         ymd = d.replace("-", "")
         try:
@@ -448,7 +462,7 @@ def worker_circle(date):
                          "Content-Type": "application/x-www-form-urlencoded",
                          "Referer": "https://circlechart.kr/page_chart/global.circle",
                          "X-Requested-With": "XMLHttpRequest"})
-            with urllib.request.urlopen(req, timeout=25) as r:
+            with urllib.request.urlopen(req, timeout=12) as r:
                 j = json.loads(r.read())
             lst = (j.get("List") or {})
             if not lst:
@@ -477,6 +491,17 @@ def dedupe(items):
         seen.add(key)
         out.append(it)
     return out
+
+
+def in_daily_window(it, date):
+    """只保留目标 KST 自然日内发布的内容。"""
+    try:
+        dt = datetime.datetime.fromisoformat(it.get("publishedAt", ""))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=KST)
+        return dt.astimezone(KST).date() == datetime.date.fromisoformat(date)
+    except (TypeError, ValueError):
+        return False
 
 
 def build_daily(items, date):
@@ -512,7 +537,8 @@ def build_daily(items, date):
         "sections": sections,
         "flashes": flashes,
         "attribution": {
-            "sources": ["Soompi", "Google News", "YouTube", "Bugs", "Melon", "Circle", "Wikidata"],
+            "sources": sorted({i.get("source", {}).get("name") for i in items
+                               if i.get("source", {}).get("name")}),
             "note": "内容版权归各原媒体所有, 本日报仅作聚合索引与翻译摘要, 不构成官方发布。",
         },
         "totalCount": total,
@@ -523,8 +549,20 @@ def _p(*a):
     print(*a, flush=True)
 
 
-def main():
-    date = datetime.date.today().isoformat()
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description="抓取并生成 KPOP 日报原始 JSON")
+    p.add_argument("--date", help="日报日期 YYYY-MM-DD，默认使用当前 KST 日期")
+    p.add_argument("--output-dir", default=os.path.join(REPO_ROOT, "dailies"),
+                   help="日报输出目录，默认仓库根目录 dailies/")
+    p.add_argument("--no-translate", action="store_true",
+                   help="跳过在线翻译，用于离线调试或翻译源不可用时")
+    return p.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    date = args.date or datetime.datetime.now(KST).date().isoformat()
+    datetime.date.fromisoformat(date)  # fail fast on an invalid date
     _p("=== KPOP Daily prototype  build date=%s ===" % date)
     news_items = []
     print("[1] news/video workers:")
@@ -533,10 +571,10 @@ def main():
     worker_youtube(news_items)
 
     print("[2] chart workers:")
-    chart_entries = []
-    chart_entries += worker_circle(date)
-    chart_entries += worker_bugs(date)
-    chart_entries += worker_melon(date)
+    with cf.ThreadPoolExecutor(max_workers=3) as ex:
+        chart_batches = list(ex.map(lambda fn: fn(date),
+                                    (worker_circle, worker_bugs, worker_melon)))
+    chart_entries = [entry for batch in chart_batches for entry in batch]
 
     print("[3] align charts (Borda consensus):")
     lengths = {"circle": 100, "bugs": 100, "melon": 100}
@@ -558,20 +596,22 @@ def main():
     print("[4] KPOP 相关性过滤 + 语义去重:")
     non_chart = [i for i in news_items if i.get("category") != "chart"]
     before = len(non_chart)
+    non_chart = [i for i in non_chart if in_daily_window(i, date)]
+    in_window_count = len(non_chart)
     non_chart = [i for i in non_chart
                  if i.get("groups") or is_kpop_relevant(i.get("originalTitle", ""))]
     non_chart = semantic_dedupe(non_chart)
-    print("  kpop 新闻: 过滤前 %d -> 相关性过滤 %d -> 语义去重 %d"
-          % (before, len([i for i in news_items if i.get("category") != "chart"
-                          and (i.get("groups") or is_kpop_relevant(i.get("originalTitle", "")))]), len(non_chart)))
+    print("  kpop 新闻: 抓取 %d -> 日期窗口 %d -> 相关性过滤/语义去重 %d"
+          % (before, in_window_count, len(non_chart)))
     all_items = dedupe(non_chart + chart_items)
     print("  total items after dedupe=%d (含榜单 %d)" % (len(all_items), len(chart_items)))
 
     print("[5] build daily report:")
     report = build_daily(all_items, date)
 
-    print("[6] 中文摘要 (MyMemory 并发翻译, 跳过榜单版块):")
-    translate_items(report, max_workers=5)
+    print("[6] 中文摘要 (gtx 优先、MyMemory 兜底, 跳过榜单版块):")
+    if not args.no_translate:
+        translate_items(report, max_workers=5)
     # 翻译后重算 lead / flashes, 使其为中文
     all_report_items = [i for s in report["sections"] for i in s["items"]]
     report["lead"] = pick_lead(all_report_items)
@@ -582,7 +622,7 @@ def main():
                           "source": i["source"]["name"]}
                          for i in recent if i["links"]["original"]]
 
-    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dailies")
+    out_dir = os.path.abspath(args.output_dir)
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "%s.json" % date)
     with open(out_path, "w", encoding="utf-8") as f:

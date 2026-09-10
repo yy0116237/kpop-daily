@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
 """生成 KPOP 个性化日报的单文件网页版 (数据内联, 双击即开)。"""
-import json, html, os
+import argparse, json, html, os, re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(ROOT, "dailies", "2026-08-15.personalized.json")
-OUT = os.path.join(ROOT, "dailies", "2026-08-15.personalized.html")
+REPO_ROOT = os.path.dirname(ROOT)
+
+_ap = argparse.ArgumentParser(description="把个性化日报 JSON 构建为单文件 HTML")
+_ap.add_argument("--input", help="个性化日报 JSON；默认取最新文件")
+_ap.add_argument("--output", help="HTML 输出路径")
+_args = _ap.parse_args()
+_daily_dir = os.path.join(REPO_ROOT, "dailies")
+if _args.input:
+    SRC = os.path.abspath(_args.input)
+else:
+    _cands = sorted(n for n in os.listdir(_daily_dir)
+                    if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.personalized\.json", n))
+    if not _cands:
+        raise SystemExit("dailies/ 中没有个性化日报 JSON")
+    SRC = os.path.join(_daily_dir, _cands[-1])
+OUT = os.path.abspath(_args.output) if _args.output else os.path.splitext(SRC)[0] + ".html"
 
 DATA = json.load(open(SRC, encoding="utf-8"))
 

@@ -91,14 +91,15 @@ def latest_daily():
         return None
     best = None
     for name in os.listdir(DAILIES_DIR):
-        m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.json", name)
+        m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})(\.personalized)?\.json", name)
         if not m:
             continue
-        if best is None or m.group(1) > best[0]:
-            best = (m.group(1), name)
+        candidate = (m.group(1), 1 if m.group(2) else 0, name)
+        if best is None or candidate[:2] > best[:2]:
+            best = candidate
     if not best:
         return None
-    with open(os.path.join(DAILIES_DIR, best[1]), "r", encoding="utf-8") as f:
+    with open(os.path.join(DAILIES_DIR, best[2]), "r", encoding="utf-8") as f:
         return {"date": best[0], "daily": json.load(f)}
 
 
@@ -204,8 +205,8 @@ class Handler(BaseHTTPRequestHandler):
                 try:
                     if os.path.commonpath([BASE, full]) == BASE and os.path.isfile(full):
                         ext = os.path.splitext(full)[1].lower()
-                        ctype = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
-                                 "gif": "image/gif", "webp": "image/webp", "svg": "image/svg+xml"}\
+                        ctype = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+                                 ".gif": "image/gif", ".webp": "image/webp", ".svg": "image/svg+xml"}\
                             .get(ext, "application/octet-stream")
                         return self._file(full, ctype)
                 except ValueError:

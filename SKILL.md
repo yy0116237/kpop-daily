@@ -1,53 +1,48 @@
 ---
 name: kpop-daily
-description: 生成「KPOP DAILY · for you」个性化每日 KPOP 资讯晨报。纯免费零 API Key 自动抓取 KPOP 新闻(RSS/YouTube)与 Melon 音源榜，按用户本命团/代际/男女团/公司偏好打分排序出新闻 Top 30，并产出单文件 HTML 网页。当用户要求"做一份 KPOP 每日日报/晨报""按我的偏好定制 KPOP 新闻""KPOP 每日资讯"时使用。
+description: 抓取公开 KPOP 新闻、视频与榜单，按粉丝偏好筛选并生成中文 HTML 日报。用户要求 KPOP 日报、追踪本命团动态、刷新日报数据或排查日报生成失败时使用；单纯记录日程、收藏或演唱会消费时不使用此 Skill。
 ---
 
-# KPOP DAILY · for you
+# KPOP DAILY
 
-生成一份「为你定制」的 KPOP 每日资讯晨报：自动抓取当日 KPOP 新闻与音源榜，翻译为中文，按你的偏好打分排序，最后产出一份单文件 HTML 网页（深色版头、新闻三列网格、音源榜单紧凑排列）。
+生成可追溯的个性化 KPOP 日报。先确认用户的日期与偏好；未指定日期时使用当前 KST 日期，未指定偏好时使用 `scripts/profile.example.json`。
 
-## 何时使用
-- 用户要"生成今天的 KPOP 日报 / 晨报"
-- 用户要"按我的本命团 / 偏好定制 KPOP 新闻"
-- 用户想每天或定期收到量身定制的 KPOP 资讯
+## 生成日报
 
-## 信息源（全部免费、零 API Key）
-- **新闻**：Soompi / Allkpop / Koreaboo RSS、Google News RSS（按团体名查询）、YouTube 频道 RSS（新视频 = 回归信号）
-- **音源榜**：Melon 实时榜（带 Cookie 破解反爬，单发直连）
-- **翻译**：Google `gtx`（沙箱可用）兜底 MyMemory（免费额度，常被 429 限流）
+从 Skill 根目录运行：
 
-## 工作流程
-1. `kpop_daily_proto.py` — 抓取新闻 + 图表，归一为 item，分 5 版块，输出 `dailies/<date>.json`
-2. `name_localization.py` — 人名「中文（English）」本地化；团名 / 歌名 / 专辑名不翻译
-3. `retra_final.py` — 只对入选日报的内容重翻（避免噪声项被翻译改写）
-4. `personalize_report.py` — 按用户偏好打分排序，筛选新闻 Top 30，榜单独立保留 → `*.personalized.json/.md`
-5. `patch_melon.py` — 抓取 Melon 实时音源榜，替换「数据·榜单」版块
-6. `build_html.py` — 由 `*.personalized.json` 生成单文件 HTML 网页
-
-## 个性化配置
-编辑 `scripts/personalize_report.py` 顶部：
-- `FAV` 本命团集合、`GENDER_PREF` 男女偏好、`GEN_PREF` 代际、`COMPANY_PREF` 公司、`TOUR_HEAVY` 常 tour 团
-- `GROUP_META` 团体元数据（性别 / 代际 / 公司）按需补充
-
-## 运行
-在 `scripts/` 目录按上述顺序运行（所有相对路径从脚本目录解析）：
 ```bash
-cd scripts
-python kpop_daily_proto.py
-python retra_final.py
-python personalize_report.py
-python patch_melon.py
-python build_html.py
+python scripts/run_daily.py
 ```
-输出：`dailies/<date>.personalized.html`（双击即开）。
 
-## 已知限制
-- 沙箱共享 IP 对 Melon 间歇限流；`patch_melon.py` 已带单发 + 重试 + Cookie，失败可重跑
-- Spotify 免费端点不可用（需 OAuth），故「数据·榜单」采用 Melon 单源
-- 新闻源为英文 RSS，翻译依赖 gtx / MyMemory，偶有不稳定
+常用参数：
 
-## 可扩展
-- 调 `kpop_daily_proto.py` 的 `GROUPS` 增加追踪团体
-- 替换翻译后端为 LibreTranslate / 正式 API / LLM
-- 接入自动化（每日定时生成日报）
+```bash
+python scripts/run_daily.py --date 2026-09-09 --profile scripts/profile.example.json --top 30
+python scripts/run_daily.py --no-translate
+python scripts/run_daily.py --skip-melon
+```
+
+统一入口依次执行抓取与归一、个性化筛选、Melon 刷新和 HTML 构建。输出固定写入根目录 `dailies/`。不要手动执行旧的硬编码日期流程。
+
+## 完成标准
+
+- 同时保留 `<date>.json`、`<date>.personalized.json`、`<date>.personalized.md` 和 `<date>.personalized.html`。
+- 报告实际成功取得的来源；某个来源失败时不得宣称它已参与当期日报。
+- 新闻必须保留原文链接、来源、发布时间和发现时间。
+- 榜单失败不阻断新闻日报；保留抓取阶段的可用榜单并明确降级。
+- 不把 2.0 工作台描述成抓取器：`workbench/` 和 `kpop-note/` 只消费已有日报并管理个人记录。
+
+## 网络与等待
+
+每次 HTTP 请求有超时，失败采用有限次数退避重试；流水线阶段也有总超时。不要无限等待或无上限重试。遇到持续网络失败时，保留已生成文件，报告失败来源和可恢复命令。
+
+需要解释数据源、抓取方式、等待/重试、降级或定时运行时，读取 [references/operations.md](references/operations.md)。
+
+## 个性化
+
+复制 `scripts/profile.example.json` 并修改本命团、性别偏好、代际、公司和常巡演团体。不要直接修改评分脚本来保存每位用户的偏好。
+
+## 2.0 工作台
+
+本地版运行 `python workbench/server.py`，读取根目录 `dailies/` 中最新日报，并把日程、收藏、Con 记录和账本保存在 `workbench/data.json`。它不会自动刷新外部数据；需要新日报时先运行统一入口。

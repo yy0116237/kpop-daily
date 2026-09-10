@@ -7,15 +7,14 @@
 - 团名/引号内歌名专辑名受保护保持英文; 成员名套「中文（English）」.
 - 翻完重算 lead / flashes, 落盘后重生成 md 预览并校验契约.
 """
-import json, os, re, time, datetime
+import argparse, json, os, re, time, datetime
 import importlib
 import kpop_daily_proto as P
 import name_localization as nl
 importlib.reload(nl)  # 确保用最新名词表
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DATE = "2026-08-15"
-JSON_PATH = os.path.join(HERE, "dailies", "%s.json" % DATE)
+REPO_ROOT = os.path.dirname(HERE)
 
 _cjk = re.compile(r"[一-鿿]")
 
@@ -26,8 +25,27 @@ def _en_of(wrapped):
 def _has_cjk(t):
     return bool(_cjk.search(t or ""))
 
-def main():
-    r = json.load(open(JSON_PATH, encoding="utf-8"))
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description="对最终入选日报进行串行重翻译")
+    p.add_argument("--input", help="日报 JSON，默认取最新个性化日报")
+    return p.parse_args(argv)
+
+
+def resolve_input(path):
+    if path:
+        return os.path.abspath(path)
+    daily_dir = os.path.join(REPO_ROOT, "dailies")
+    cands = sorted(n for n in os.listdir(daily_dir)
+                   if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.personalized\.json", n))
+    if not cands:
+        raise SystemExit("dailies/ 中没有个性化日报 JSON")
+    return os.path.join(daily_dir, cands[-1])
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    json_path = resolve_input(args.input)
+    r = json.load(open(json_path, encoding="utf-8"))
     items = [i for s in r["sections"] for i in s["items"]]
     non_chart = [i for i in items if i.get("category") != "chart"]
 
@@ -82,7 +100,7 @@ def main():
                      "source": i["source"]["name"]}
                     for i in recent if i["links"]["original"]]
 
-    json.dump(r, open(JSON_PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    json.dump(r, open(json_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
     after_zh = sum(1 for i in non_chart if _has_cjk(i.get("title")))
     print("条目(非榜单):", len(non_chart))
@@ -117,7 +135,8 @@ def main():
         L.append("")
     L += ["---", "数据来源: " + ", ".join(r["attribution"]["sources"]), "", r["attribution"]["note"]]
     md = "\n".join(L)
-    open(os.path.join(HERE, "dailies", "%s.md" % DATE), "w", encoding="utf-8").write(md)
+    md_path = os.path.splitext(json_path)[0] + ".md"
+    open(md_path, "w", encoding="utf-8").write(md)
     print("md regenerated (%d bytes)" % len(md))
 
 if __name__ == "__main__":

@@ -11,22 +11,25 @@ import os
 import re
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(BASE)
 TPL = os.path.join(BASE, "kpop_note_template.html")
-SEED = os.path.join(BASE, "workbench", "data.json")
+SEED = os.path.join(REPO_ROOT, "workbench", "data.json")
 OUT = os.path.join(BASE, "kpop-note-workspace.html")
+DAILIES = os.path.join(REPO_ROOT, "dailies")
 
 
 def latest_daily_path():
     """dailies/ 下最新日期的 YYYY-MM-DD.json（排除 .personalized 等后缀）。"""
     cands = []
-    for name in os.listdir(os.path.join(BASE, "dailies")):
+    for name in os.listdir(DAILIES):
         m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.json", name)
         if m:
             cands.append(m.group(1))
     if not cands:
         raise SystemExit("dailies/ 下没有 YYYY-MM-DD.json")
     latest = max(cands)
-    return os.path.join(BASE, "dailies", latest + ".json"), latest
+    preferred = os.path.join(DAILIES, latest + ".personalized.json")
+    return (preferred if os.path.exists(preferred) else os.path.join(DAILIES, latest + ".json")), latest
 
 
 def slim_item(it):

@@ -3,12 +3,10 @@
 不改动抓取/翻译/对齐逻辑，只读现有 JSON 重新打分、重排、裁剪。
 榜单版块(Melon 单源)原样保留, 不挤入 30 条竞争。
 """
-import json, re, os
+import argparse, json, re, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "dailies", "2026-08-15.json")
-OUT = os.path.join(HERE, "dailies", "2026-08-15.personalized.json")
-MD  = os.path.join(HERE, "dailies", "2026-08-15.personalized.md")
+REPO_ROOT = os.path.dirname(HERE)
 SCHEMA = os.path.join(HERE, "kpop_daily.schema.json")
 
 # ---------- 用户偏好(来自本次问卷) ----------
@@ -99,8 +97,50 @@ def score_item(it):
         best -= 6
     return base + best
 
-def main():
-    r = json.load(open(SRC, encoding="utf-8"))
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description="按用户偏好筛选 KPOP 日报 Top N")
+    p.add_argument("--date", help="日报日期，默认取根目录 dailies/ 中最新原始日报")
+    p.add_argument("--input", help="原始日报 JSON 路径")
+    p.add_argument("--output", help="个性化 JSON 路径")
+    p.add_argument("--profile", help="偏好配置 JSON；未提供时使用脚本内默认偏好")
+    p.add_argument("--top", type=int, default=30, help="新闻入选上限，默认 30")
+    return p.parse_args(argv)
+
+
+def resolve_paths(args):
+    daily_dir = os.path.join(REPO_ROOT, "dailies")
+    if args.input:
+        src = os.path.abspath(args.input)
+        date = args.date or os.path.basename(src).split(".")[0]
+    else:
+        dates = sorted(n[:-5] for n in os.listdir(daily_dir)
+                       if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.json", n))
+        if not dates and not args.date:
+            raise SystemExit("dailies/ 中没有原始日报 JSON")
+        date = args.date or dates[-1]
+        src = os.path.join(daily_dir, date + ".json")
+    out = os.path.abspath(args.output) if args.output else os.path.join(daily_dir, date + ".personalized.json")
+    return date, src, out, os.path.splitext(out)[0] + ".md"
+
+
+def apply_profile(path):
+    global FAV, GENDER_PREF, GEN_PREF, COMPANY_PREF, TOUR_HEAVY
+    if not path:
+        return
+    with open(path, encoding="utf-8") as f:
+        p = json.load(f)
+    FAV = set(p.get("favoriteGroups", FAV))
+    GENDER_PREF = p.get("gender", GENDER_PREF)
+    GEN_PREF = set(p.get("generations", GEN_PREF))
+    COMPANY_PREF = set(p.get("companies", COMPANY_PREF))
+    TOUR_HEAVY = set(p.get("tourHeavyGroups", TOUR_HEAVY))
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    apply_profile(args.profile)
+    date, src, out_path, md_path = resolve_paths(args)
+    r = json.load(open(src, encoding="utf-8"))
     news_sections = [s for s in r["sections"] if s["label"] != "数据·榜单"]
     chart_section = next((s for s in r["sections"] if s["label"] == "数据·榜单"), None)
 
@@ -110,7 +150,7 @@ def main():
             scored.append((score_item(it), it, s["label"]))
     scored.sort(key=lambda x: x[0], reverse=True)
 
-    top = scored[:30]
+    top = scored[:max(args.top, 0)]
     # 按版块重组(版块内按分数降序)
     from collections import defaultdict
     by_sec = defaultdict(list)
@@ -133,7 +173,7 @@ def main():
     total_all = total_news + (len(chart_section["items"]) if chart_section else 0)
 
     # lead / flashes 取分数最高
-    lead_item = top[0][1]
+    lead_item = top[0][1] if top else None
     flashes = []
     for sc, it, lab in top[:5]:
         if it.get("links", {}).get("original"):
@@ -143,18 +183,18 @@ def main():
     out = dict(r)
     out["sections"] = new_sections
     out["totalCount"] = total_all
-    out["lead"] = lead_item["title"]
+    out["lead"] = lead_item["title"] if lead_item else "本次收录窗口内暂无符合条件的新闻。"
     out["flashes"] = flashes
     # 标注个性化
     out["personalization"] = {
         "favoriteGroups": sorted(FAV),
-        "gender": "female-priority",
+        "gender": {"F": "female-priority", "M": "male-priority", "B": "both"}.get(GENDER_PREF, "both"),
         "generations": sorted(GEN_PREF),
         "companies": sorted(COMPANY_PREF),
         "newsSelected": total_news,
         "note": "新闻 4 版块按个性化打分取 Top 30; 数据·榜单为独立 Melon 单源, 不参与排序。",
     }
-    json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    json.dump(out, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
     # ---- 生成人可读 markdown 预览 ----
     pz = out.get("personalization", {})
@@ -166,7 +206,9 @@ def main():
     L = []
     L.append("# KPOP 日报 · 个性化版 · %s" % out["date"])
     L.append("")
-    L.append("> 按你的偏好量身定制：本命团 %s ｜ 女团为主 ｜ %s代 ｜ 公司 %s" % (fav_line, gen_line, comp_line))
+    gender_line = {"F": "女团优先", "M": "男团优先", "B": "男女团均衡"}.get(GENDER_PREF, "不限")
+    L.append("> 按你的偏好量身定制：本命团 %s ｜ %s ｜ %s代 ｜ 公司 %s" %
+             (fav_line, gender_line, gen_line, comp_line))
     L.append("")
     L.append("- 生成时间: %s (KST)" % out["generatedAt"])
     L.append("- 新闻精选: %d 条（Top 30，按个性化打分排序） ｜ 榜单: 独立 Melon 单源 %d 条" % (news_n, chart_n))
@@ -199,7 +241,7 @@ def main():
     L.append("数据来源: " + ", ".join(out["attribution"]["sources"]))
     L.append("")
     L.append(out["attribution"]["note"])
-    open(MD, "w", encoding="utf-8").write("\n".join(L))
+    open(md_path, "w", encoding="utf-8").write("\n".join(L))
     print("md written, bytes:", len("\n".join(L)))
 
     # 校验
@@ -214,6 +256,7 @@ def main():
     print("新闻入选:", total_news, " | 各版块:",
           {s["label"]: len(s["items"]) for s in new_sections})
     print("lead:", out["lead"])
+    print("json:", out_path)
     print("\n--- Top 12 (分数 | 团体 | 标题) ---")
     for sc, it, lab in top[:12]:
         print("  %3d | %-12s | %s" % (sc, ",".join(it.get("groups", [])) or "-", it["title"][:55]))
